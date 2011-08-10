@@ -34,16 +34,11 @@ m.withProject = function (projects, index, handler, finished) {
 
 
 m.cloneProject = function (project, cb) {
-    var stat;
-    try {
-        stat = fs.statSync(project);
-    } catch(e) {}
-
     // If the path already exists, don't do anything.
-    if (stat) {
+    if (directoryExists(project)) {
         cb();
         return;
-    };
+    }
 
     cp.exec("git clone git://gitorious.org/buster/" + project + ".git", function (err, stdout, stderr) {
         if (err) throw err;
