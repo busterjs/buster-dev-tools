@@ -53,6 +53,15 @@ m.cloneProject = function (project, cb) {
 };
 m.cloneProject.label = "Cloning projects";
 
+m.updateProject = function (project, cb) {
+    cp.exec("cd " + project + "; git pull origin master", function (err, stdout, stderr) {
+        if (err) throw err;
+        sys.print(".");
+        cb();
+    });
+};
+m.updateProject.label = "Updating projects";
+
 m.symlinkProjectDependencies = function (project, cb) {
     var pkg = JSON.parse(fs.readFileSync(process.cwd() + "/" + project + "/package.json"));
     var pkgRoot = process.cwd() + "/" + project;
