@@ -60,12 +60,13 @@ m.updateProject.label = "Updating projects";
 m.symlinkProjectDependencies = function (project, cb) {
     var pkg = JSON.parse(fs.readFileSync(process.cwd() + "/" + project + "/package.json"));
     var pkgRoot = process.cwd() + "/" + project;
-    if (!directoryExists(pkgRoot + "/node_modules")) {
-        fs.mkdirSync(pkgRoot + "/node_modules", 0777);
+    var pkgNodeModules = pkgRoot + "/node_modules"
+    if (!directoryExists(pkgNodeModules)) {
+        fs.mkdirSync(pkgNodeModules, 0777);
     }
 
     for (var dependency in pkg.dependencies) {
-        var symlinkTarget = pkgRoot + "/node_modules/" + dependency;
+        var symlinkTarget = pkgNodeModules + dependency;
         if (isBusterModule(dependency) && !symlinkExists(symlinkTarget)) {
             fs.symlinkSync(process.cwd() + "/" + dependency, symlinkTarget);
         }
