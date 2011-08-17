@@ -66,7 +66,7 @@ m.symlinkProjectDependencies = function (project, cb) {
     }
 
     for (var dependency in pkg.dependencies) {
-        var symlinkTarget = pkgNodeModules + dependency;
+        var symlinkTarget = pkgNodeModules + "/" + dependency;
         if (isBusterModule(dependency) && !symlinkExists(symlinkTarget)) {
             fs.symlinkSync(process.cwd() + "/" + dependency, symlinkTarget);
         }
