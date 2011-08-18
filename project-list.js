@@ -16,5 +16,7 @@ module.exports = [
     "buster-test-cli",
     "buster-user-agent-parser",
     "buster-util",
-    "sinon-buster"
+    "sinon-buster",
+    "buster-configuration",
+    "buster-cli"
 ];
