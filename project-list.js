@@ -7,7 +7,6 @@ module.exports = [
     "buster-evented-logger",
     "buster-format",
     "buster-module-loader",
-    "buster-multicast",
     "buster-promise",
     "buster-script-loader",
     "buster-server",
