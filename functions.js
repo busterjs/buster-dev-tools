@@ -65,7 +65,20 @@ m.symlinkProjectDependencies = function (project, cb) {
         fs.mkdirSync(pkgNodeModules, 0777);
     }
 
-    for (var dependency in pkg.dependencies) {
+    var dependencies = {};
+    if ("dependencies" in pkg) {
+        for (var dependency in pkg.dependencies) {
+            dependencies[dependency] = pkg.dependencies[dependency];
+        }
+    }
+
+    if ("devDependencies" in pkg) {
+        for (var dependency in pkg.devDependencies) {
+            dependencies[dependency] = pkg.devDependencies[dependency];
+        }
+    }
+        
+    for (var dependency in dependencies) {
         var symlinkTarget = pkgNodeModules + "/" + dependency;
         if (isBusterModule(dependency) && !symlinkExists(symlinkTarget)) {
             fs.symlinkSync(process.cwd() + "/" + dependency, symlinkTarget);
