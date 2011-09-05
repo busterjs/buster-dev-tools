@@ -60,7 +60,7 @@ m.updateProject.label = "Updating projects";
 m.symlinkProjectDependencies = function (project, cb) {
     var pkg = JSON.parse(fs.readFileSync(process.cwd() + "/" + project + "/package.json"));
     var pkgRoot = process.cwd() + "/" + project;
-    var pkgNodeModules = pkgRoot + "/node_modules"
+    var pkgNodeModules = pkgRoot + "/node_modules";
     if (!directoryExists(pkgNodeModules)) {
         fs.mkdirSync(pkgNodeModules, 0777);
     }
