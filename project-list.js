@@ -17,5 +17,6 @@ module.exports = [
     "buster-util",
     "sinon-buster",
     "buster-configuration",
-    "buster-cli"
+    "buster-cli",
+    "buster-resources"
 ];
