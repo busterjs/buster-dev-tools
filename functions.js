@@ -3,6 +3,7 @@ var cp = require("child_process");
 var fs = require("fs");
 var path = require("path");
 var projects = require("./project-list");
+var childProcess = require("child_process");
 
 
 module.exports = {};
@@ -65,28 +66,42 @@ m.symlinkProjectDependencies = function (project, cb) {
         fs.mkdirSync(pkgNodeModules, 0777);
     }
 
-    var dependencies = {};
+    var dependencies =  [];
     if ("dependencies" in pkg) {
         for (var dependency in pkg.dependencies) {
-            dependencies[dependency] = pkg.dependencies[dependency];
+            dependencies.push(dependency);
         }
     }
 
     if ("devDependencies" in pkg) {
         for (var dependency in pkg.devDependencies) {
-            dependencies[dependency] = pkg.devDependencies[dependency];
-        }
-    }
-        
-    for (var dependency in dependencies) {
-        var symlinkTarget = pkgNodeModules + "/" + dependency;
-        if (isBusterModule(dependency) && !symlinkExists(symlinkTarget)) {
-            fs.symlinkSync(process.cwd() + "/" + dependency, symlinkTarget);
+            dependencies.push(dependency);
         }
     }
 
-    sys.print(".");;
-    cb();
+    var operator = function () {
+        if (dependencies.length == 0) {
+            cb();
+        } else {
+            var dependency = dependencies.shift();
+            if (isBusterModule(dependency)) {
+                var symlinkTarget = pkgNodeModules + "/" + dependency;
+                childProcess.exec("rm -rf " + symlinkTarget, function (error, stdout, stderr) {
+                    if (error) {
+                        throw new Error(error);
+                    }
+
+                    fs.symlinkSync(process.cwd() + "/" + dependency, symlinkTarget);
+                    sys.print(".");;
+                    operator();
+                });
+            } else {
+                operator();
+            }
+        }
+    }
+
+    operator();
 };
 m.symlinkProjectDependencies.label = "Symlinking dependencies";
 
