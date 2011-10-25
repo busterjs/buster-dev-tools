@@ -18,5 +18,6 @@ module.exports = [
     "sinon-buster",
     "buster-configuration",
     "buster-cli",
-    "buster-resources"
+    "buster-resources",
+    "buster-bayeux-emitter"
 ];
