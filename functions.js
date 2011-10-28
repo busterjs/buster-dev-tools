@@ -41,7 +41,7 @@ m.cloneProject = function (project, cb) {
         return;
     }
 
-    cp.exec("git clone git://gitorious.org/buster/" + project + ".git", function (err, stdout, stderr) {
+    cp.exec("git clone git@gitorious.org:buster/" + project + ".git", function (err, stdout, stderr) {
         if (err) throw err;
         sys.print(".");
         cb();
