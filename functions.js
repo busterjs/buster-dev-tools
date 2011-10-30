@@ -108,7 +108,10 @@ m.symlinkProjectDependencies.label = "Symlinking dependencies";
 
 m.npmLinkProject = function(project, cb) {
     cp.exec("cd " + process.cwd() + "/" + project + "; npm link", function (err, stdout, stderr) {
-        if (err) throw err;
+        if (err) {
+            console.log(project);
+            throw err;
+        }
         sys.print(".");
         cb();
     });
