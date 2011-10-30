@@ -19,5 +19,6 @@ module.exports = [
     "buster-configuration",
     "buster-cli",
     "buster-resources",
-    "buster-bayeux-emitter"
+    "buster-bayeux-emitter",
+    "buster-stdio-logger"
 ];
