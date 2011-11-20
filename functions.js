@@ -126,6 +126,27 @@ m.initProjectSubmodules = function(project, cb) {
 }
 m.initProjectSubmodules.label = "Initializing submodules";
 
+m.removeSinon = function (project, cb) {
+    cp.exec("rm -rf " + project + "/node_modules/sinon", function (error, stdout, stderr) {
+        if (!error) sys.print(".");
+        cb();
+    });
+}
+m.removeSinon.label = "Removing stable Sinon.JS";
+
+m.addSinon = function (project, cb) {
+    var sinonPath = project + "/node_modules/sinon";
+    if (directoryExists(sinonPath)) {
+        cp.exec("rm -rf " + sinonPath + " && git clone git://github.com/cjohansen/Sinon.JS " + sinonPath, function (err, stdout, stderr) {
+            sys.print(".");
+            cb();
+        });
+    } else {
+        cb();
+    }
+}
+m.addSinon.label = "Adding Sinon.JS HEAD";
+
 
 function isBusterModule(module) {
     for (var i = 0, ii = projects.length; i < ii; i++) {
