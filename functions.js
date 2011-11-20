@@ -3,7 +3,6 @@ var cp = require("child_process");
 var fs = require("fs");
 var path = require("path");
 var projects = require("./project-list");
-var childProcess = require("child_process");
 
 
 module.exports = {};
@@ -86,7 +85,7 @@ m.symlinkProjectDependencies = function (project, cb) {
             var dependency = dependencies.shift();
             if (isBusterModule(dependency)) {
                 var symlinkTarget = pkgNodeModules + "/" + dependency;
-                childProcess.exec("rm -rf " + symlinkTarget, function (error, stdout, stderr) {
+                cp.exec("rm -rf " + symlinkTarget, function (error, stdout, stderr) {
                     if (error) {
                         throw new Error(error);
                     }
