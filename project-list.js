@@ -9,7 +9,7 @@ module.exports = [
     "buster-module-loader",
     "buster-promise",
     "buster-script-loader",
-    "buster-server",
+    "buster-capture-server",
     "buster-terminal",
     "buster-test",
     "buster-test-cli",
