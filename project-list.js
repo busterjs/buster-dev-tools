@@ -19,5 +19,6 @@ module.exports = [
     "buster-stdio-logger",
     "buster-cli",
     "buster-test-cli",
+    "buster-static",
     "buster"
 ];
