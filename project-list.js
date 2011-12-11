@@ -1,4 +1,5 @@
 module.exports = [
+    {name: "sinon", gitUrl: "git://github.com/cjohansen/Sinon.JS"},
     "buster-util",
     "buster-user-agent-parser",
     "buster-terminal",

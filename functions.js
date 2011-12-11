@@ -9,6 +9,17 @@ module.exports = {};
 var m = module.exports;
 
 m.withProjects = function(projects, handlers) {
+    for (var i = 0, ii = projects.length; i < ii; i++) {
+        var project = projects[i];
+
+        if (typeof project == "string") {
+            project = {name: project, gitUrl: "git@gitorious.org:buster/" + project + ".git"}
+        }
+        project.localPath = path.resolve(__dirname + "/../" + project.name);
+
+        projects[i] = project;
+    }
+
     var handler = handlers.shift();
     if (handler == undefined) {
         console.log("DONE LOL");
@@ -35,12 +46,12 @@ m.withProject = function (projects, index, handler, finished) {
 
 m.cloneProject = function (project, cb) {
     // If the path already exists, don't do anything.
-    if (directoryExists(project)) {
+    if (directoryExists(project.localPath)) {
         cb();
         return;
     }
 
-    cp.exec("git clone git@gitorious.org:buster/" + project + ".git", function (err, stdout, stderr) {
+    cp.exec("git clone " + project.gitUrl + " " + project.localPath, function (err, stdout, stderr) {
         if (err) throw err;
         sys.print(".");
         cb();
@@ -49,7 +60,7 @@ m.cloneProject = function (project, cb) {
 m.cloneProject.label = "Cloning projects";
 
 m.updateProject = function (project, cb) {
-    cp.exec("cd " + project + "; git pull origin master", function (err, stdout, stderr) {
+    cp.exec("cd " + project.localPath + "; git pull origin master", function (err, stdout, stderr) {
         if (err) throw err;
         sys.print(".");
         cb();
@@ -58,8 +69,8 @@ m.updateProject = function (project, cb) {
 m.updateProject.label = "Updating projects";
 
 m.symlinkProjectDependencies = function (project, cb) {
-    var pkg = JSON.parse(fs.readFileSync(process.cwd() + "/" + project + "/package.json"));
-    var pkgRoot = process.cwd() + "/" + project;
+    var pkg = JSON.parse(fs.readFileSync(process.cwd() + "/" + project.name + "/package.json"));
+    var pkgRoot = process.cwd() + "/" + project.name;
     var pkgNodeModules = pkgRoot + "/node_modules";
     if (!directoryExists(pkgNodeModules)) {
         fs.mkdirSync(pkgNodeModules, 0777);
@@ -106,7 +117,7 @@ m.symlinkProjectDependencies.label = "Symlinking dependencies";
 
 
 m.npmLinkProject = function(project, cb) {
-    cp.exec("cd " + process.cwd() + "/" + project + "; npm link", function (err, stdout, stderr) {
+    cp.exec("cd " + process.cwd() + "/" + project.name + "; npm link", function (err, stdout, stderr) {
         if (err) {
             console.log(project);
             throw err;
@@ -118,7 +129,7 @@ m.npmLinkProject = function(project, cb) {
 m.npmLinkProject.label = "npm linking";
 
 m.initProjectSubmodules = function(project, cb) {
-    cp.exec("cd " + process.cwd() + "/" + project + "; git submodule update --init", function (err, stdout, stderr) {
+    cp.exec("cd " + process.cwd() + "/" + project.name + "; git submodule update --init", function (err, stdout, stderr) {
         if (err) throw err;
         sys.print(".");
         cb();
@@ -126,31 +137,10 @@ m.initProjectSubmodules = function(project, cb) {
 }
 m.initProjectSubmodules.label = "Initializing submodules";
 
-m.removeSinon = function (project, cb) {
-    cp.exec("rm -rf " + project + "/node_modules/sinon", function (error, stdout, stderr) {
-        if (!error) sys.print(".");
-        cb();
-    });
-}
-m.removeSinon.label = "Removing stable Sinon.JS";
-
-m.addSinon = function (project, cb) {
-    var sinonPath = project + "/node_modules/sinon";
-    if (directoryExists(sinonPath)) {
-        cp.exec("rm -rf " + sinonPath + " && git clone git://github.com/cjohansen/Sinon.JS " + sinonPath, function (err, stdout, stderr) {
-            sys.print(".");
-            cb();
-        });
-    } else {
-        cb();
-    }
-}
-m.addSinon.label = "Adding Sinon.JS HEAD";
-
 
 function isBusterModule(module) {
     for (var i = 0, ii = projects.length; i < ii; i++) {
-        if (projects[i] == module) return true;
+        if (projects[i].name == module) return true;
     }
 
     return false;
