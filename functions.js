@@ -1,4 +1,4 @@
-var sys = require("sys");
+var util = require("util");
 var cp = require("child_process");
 var fs = require("fs");
 var path = require("path");
@@ -15,7 +15,7 @@ m.withProjects = function(projects, handlers) {
         return;
     }
 
-    sys.print(handler.label + ": ");
+    util.print(handler.label + ": ");
     m.withProject(projects, 0, handler, function () {
         m.withProjects(projects, handlers);
     });
@@ -42,7 +42,7 @@ m.cloneProject = function (project, cb) {
 
     cp.exec("git clone git@gitorious.org:buster/" + project + ".git", function (err, stdout, stderr) {
         if (err) throw err;
-        sys.print(".");
+        util.print(".");
         cb();
     });
 };
@@ -51,7 +51,7 @@ m.cloneProject.label = "Cloning projects";
 m.updateProject = function (project, cb) {
     cp.exec("cd " + project + "; git pull origin master", function (err, stdout, stderr) {
         if (err) throw err;
-        sys.print(".");
+        util.print(".");
         cb();
     });
 };
@@ -91,7 +91,7 @@ m.symlinkProjectDependencies = function (project, cb) {
                     }
 
                     fs.symlinkSync(process.cwd() + "/" + dependency, symlinkTarget);
-                    sys.print(".");;
+                    util.print(".");;
                     operator();
                 });
             } else {
@@ -111,7 +111,7 @@ m.npmLinkProject = function(project, cb) {
             console.log(project);
             throw err;
         }
-        sys.print(".");
+        util.print(".");
         cb();
     });
 }
@@ -120,7 +120,7 @@ m.npmLinkProject.label = "npm linking";
 m.initProjectSubmodules = function(project, cb) {
     cp.exec("cd " + process.cwd() + "/" + project + "; git submodule update --init", function (err, stdout, stderr) {
         if (err) throw err;
-        sys.print(".");
+        util.print(".");
         cb();
     });
 }
@@ -128,7 +128,7 @@ m.initProjectSubmodules.label = "Initializing submodules";
 
 m.removeSinon = function (project, cb) {
     cp.exec("rm -rf " + project + "/node_modules/sinon", function (error, stdout, stderr) {
-        if (!error) sys.print(".");
+        if (!error) util.print(".");
         cb();
     });
 }
@@ -138,7 +138,7 @@ m.addSinon = function (project, cb) {
     var sinonPath = project + "/node_modules/sinon";
     if (directoryExists(sinonPath)) {
         cp.exec("rm -rf " + sinonPath + " && git clone git://github.com/cjohansen/Sinon.JS " + sinonPath, function (err, stdout, stderr) {
-            sys.print(".");
+            util.print(".");
             cb();
         });
     } else {
