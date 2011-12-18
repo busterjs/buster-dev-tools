@@ -13,9 +13,9 @@ m.withProjects = function(projects, handlers) {
         var project = projects[i];
 
         if (typeof project == "string") {
-            project = {name: project, gitUrl: "git@gitorious.org:buster/" + project + ".git"}
+            project = {name: project, gitUrl: "git://gitorious.org/buster/" + project + ".git"}
         }
-        project.localPath = path.resolve(__dirname + "/../" + project.name);
+        project.localPath = path.resolve(path.join(__dirname, "..", project.name));
 
         projects[i] = project;
     }
@@ -69,9 +69,9 @@ m.updateProject = function (project, cb) {
 m.updateProject.label = "Updating projects";
 
 m.symlinkProjectDependencies = function (project, cb) {
-    var pkg = JSON.parse(fs.readFileSync(process.cwd() + "/" + project.name + "/package.json"));
-    var pkgRoot = process.cwd() + "/" + project.name;
-    var pkgNodeModules = pkgRoot + "/node_modules";
+    var pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), project.name, "package.json")));
+    var pkgRoot = path.join(process.cwd(), project.name);
+    var pkgNodeModules = path.join(pkgRoot + "node_modules");
     if (!directoryExists(pkgNodeModules)) {
         fs.mkdirSync(pkgNodeModules, 0777);
     }
@@ -95,13 +95,13 @@ m.symlinkProjectDependencies = function (project, cb) {
         } else {
             var dependency = dependencies.shift();
             if (isBusterModule(dependency)) {
-                var symlinkTarget = pkgNodeModules + "/" + dependency;
+                var symlinkTarget = path.join(pkgNodeModules, dependency);
                 cp.exec("rm -rf " + symlinkTarget, function (error, stdout, stderr) {
                     if (error) {
                         throw new Error(error);
                     }
 
-                    fs.symlinkSync(process.cwd() + "/" + dependency, symlinkTarget);
+                    fs.symlinkSync(path.join(process.cwd(), dependency), symlinkTarget);
                     util.print(".");;
                     operator();
                 });
@@ -117,7 +117,7 @@ m.symlinkProjectDependencies.label = "Symlinking dependencies";
 
 
 m.npmLinkProject = function(project, cb) {
-    cp.exec("cd " + process.cwd() + "/" + project.name + "; npm link", function (err, stdout, stderr) {
+    cp.exec("cd " + path.join(process.cwd(), project.name) + "; npm link", function (err, stdout, stderr) {
         if (err) {
             console.log(project);
             throw err;
@@ -129,7 +129,7 @@ m.npmLinkProject = function(project, cb) {
 m.npmLinkProject.label = "npm linking";
 
 m.initProjectSubmodules = function(project, cb) {
-    cp.exec("cd " + process.cwd() + "/" + project.name + "; git submodule update --init", function (err, stdout, stderr) {
+    cp.exec("cd " + path.join(process.cwd(), project.name) + "; git submodule update --init", function (err, stdout, stderr) {
         if (err) throw err;
         util.print(".");
         cb();
