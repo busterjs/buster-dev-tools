@@ -54,7 +54,15 @@ m.cloneProject = function (project, cb) {
     cp.exec("git clone " + project.gitUrl + " " + project.localPath, function (err, stdout, stderr) {
         if (err) throw err;
         util.print(".");
-        cb();
+
+        if ("branch" in project) {
+            cp.exec("cd " + project.localPath + "&& git checkout -t origin/" + project.branch, function (err, stdout, stderr) {
+                if (err) throw err;
+                cb();
+            });
+        } else {
+            cb();
+        }
     });
 };
 m.cloneProject.label = "Cloning projects";
