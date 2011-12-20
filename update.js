@@ -4,7 +4,7 @@ var f = require("./functions");
 var argv = process.argv.slice(2);
 var tasks = [];
 
-if (argv.indexOf("--skip-update") < 0) {
+if (argv.indexOf("--skip-pull") < 0) {
     tasks.push(f.updateProject);
 }
 
