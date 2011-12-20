@@ -136,14 +136,14 @@ m.npmLinkProject = function(project, cb) {
 }
 m.npmLinkProject.label = "npm linking";
 
-m.initProjectSubmodules = function(project, cb) {
+m.updateProjectSubmodules = function(project, cb) {
     cp.exec("cd " + path.join(process.cwd(), project.name) + "; git submodule update --init", function (err, stdout, stderr) {
         if (err) throw err;
         util.print(".");
         cb();
     });
 }
-m.initProjectSubmodules.label = "Initializing submodules";
+m.updateProjectSubmodules.label = "Initializing submodules";
 
 function isBusterModule(module) {
     for (var i = 0, ii = projects.length; i < ii; i++) {
