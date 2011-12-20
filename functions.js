@@ -22,7 +22,7 @@ m.withProjects = function(projects, handlers) {
 
     var handler = handlers.shift();
     if (handler == undefined) {
-        console.log("DONE LOL");
+        console.log("Finished!");
         return;
     }
 
