@@ -13,7 +13,7 @@ m.withProjects = function(projects, handlers) {
         var project = projects[i];
 
         if (typeof project == "string") {
-            project = {name: project, gitUrl: "git://gitorious.org/buster/" + project + ".git"}
+            project = {name: project, gitUrl: "git://github.com/busterjs/" + project + ".git"}
         }
         project.localPath = path.resolve(path.join(__dirname, "..", project.name));
 
