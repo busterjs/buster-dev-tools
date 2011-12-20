@@ -68,11 +68,15 @@ m.cloneProject = function (project, cb) {
 m.cloneProject.label = "Cloning projects";
 
 m.updateProject = function (project, cb) {
-    cp.exec("cd " + project.localPath + "; git pull origin master", function (err, stdout, stderr) {
-        if (err) throw err;
-        util.print(".");
-        cb();
-    });
+    if (directoryExists(project.localPath)) {
+        cp.exec("cd " + project.localPath + "; git pull origin master", function (err, stdout, stderr) {
+            if (err) throw err;
+            util.print(".");
+            cb();
+        });
+    } else {
+        m.cloneProject(project, cb);
+    }
 };
 m.updateProject.label = "Updating projects";
 
