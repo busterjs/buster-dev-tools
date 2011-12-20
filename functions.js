@@ -112,7 +112,7 @@ m.symlinkProjectDependencies = function (project, cb) {
                         throw new Error(error);
                     }
 
-                    fs.symlinkSync(path.join(process.cwd(), dependency), symlinkTarget);
+                    fs.symlinkSync(path.resolve(path.join(__dirname, "..", dependency)), symlinkTarget);
                     util.print(".");;
                     operator();
                 });
