@@ -81,9 +81,8 @@ m.updateProject = function (project, cb) {
 m.updateProject.label = "Updating projects";
 
 m.symlinkProjectDependencies = function (project, cb) {
-    var pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), project.name, "package.json")));
-    var pkgRoot = path.join(process.cwd(), project.name);
-    var pkgNodeModules = path.join(pkgRoot, "node_modules");
+    var pkg = JSON.parse(fs.readFileSync(path.join(project.localPath, "package.json")));
+    var pkgNodeModules = path.join(project.localPath, "node_modules");
     if (!directoryExists(pkgNodeModules)) {
         fs.mkdirSync(pkgNodeModules, 0777);
     }
@@ -129,7 +128,7 @@ m.symlinkProjectDependencies.label = "Symlinking dependencies";
 
 
 m.npmLinkProject = function(project, cb) {
-    cp.exec("cd " + path.join(process.cwd(), project.name) + "; npm link", function (err, stdout, stderr) {
+    cp.exec("cd " + path.join(project.localPath) + "; npm link", function (err, stdout, stderr) {
         if (err) {
             console.log(project);
             throw err;
@@ -141,7 +140,7 @@ m.npmLinkProject = function(project, cb) {
 m.npmLinkProject.label = "npm linking";
 
 m.updateProjectSubmodules = function(project, cb) {
-    cp.exec("cd " + path.join(process.cwd(), project.name) + "; git submodule update --init", function (err, stdout, stderr) {
+    cp.exec("cd " + path.join(project.localPath) + "; git submodule update --init", function (err, stdout, stderr) {
         if (err) throw err;
         util.print(".");
         cb();
