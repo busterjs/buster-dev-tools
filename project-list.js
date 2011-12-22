@@ -1,7 +1,4 @@
 module.exports = [
-    // When using local faye, you need to build faye manually with jake
-    // {name: "faye", gitUrl: "git://github.com/jcoglan/faye.git", branch: "0.8.x"},
-    // {name: "faye-websocket", gitUrl: "git://github.com/jcoglan/faye-websocket-node.git"},
     {name: "sinon", gitUrl: "git://github.com/cjohansen/Sinon.JS.git"},
     "buster-util",
     "buster-user-agent-parser",
