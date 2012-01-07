@@ -120,7 +120,7 @@ m.symlinkProjectDependencies.label = "Symlinking dependencies";
 
 
 m.npmLinkProject = function(project, cb) {
-    cp.exec("cd " + quote(path.join(project.localPath)) + "; npm link", function (err, stdout, stderr) {
+    cp.exec("cd " + quote(project.localPath) + "; npm link", function (err, stdout, stderr) {
         if (err) {
             console.log(project);
             throw err;
@@ -132,7 +132,7 @@ m.npmLinkProject = function(project, cb) {
 m.npmLinkProject.label = "npm linking";
 
 m.updateProjectSubmodules = function(project, cb) {
-    cp.exec("cd " + quote(path.join(project.localPath)) + "; git submodule update --init", function (err, stdout, stderr) {
+    cp.exec("cd " + quote(project.localPath) + "; git submodule update --init", function (err, stdout, stderr) {
         if (err) throw err;
         util.print(".");
         cb();
