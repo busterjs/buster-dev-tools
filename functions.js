@@ -51,7 +51,7 @@ m.cloneProject = function (project, cb) {
         return;
     }
 
-    cp.exec("git clone " + project.gitUrl + " " + project.localPath, function (err, stdout, stderr) {
+    cp.exec("git clone " + quote(project.gitUrl) + " " + quote(project.localPath), function (err, stdout, stderr) {
         if (err) throw err;
         util.print(".");
         cb();
@@ -61,7 +61,7 @@ m.cloneProject.label = "Cloning projects";
 
 m.updateProject = function (project, cb) {
     if (directoryExists(project.localPath)) {
-        cp.exec("cd " + project.localPath + "; git pull origin master", function (err, stdout, stderr) {
+        cp.exec("cd " + quote(project.localPath) + "; git pull origin master", function (err, stdout, stderr) {
             if (err) throw err;
             util.print(".");
             cb();
@@ -99,7 +99,7 @@ m.symlinkProjectDependencies = function (project, cb) {
             var dependency = dependencies.shift();
             if (isBusterModule(dependency)) {
                 var symlinkTarget = path.join(pkgNodeModules, dependency);
-                cp.exec("rm -rf " + symlinkTarget, function (error, stdout, stderr) {
+                cp.exec("rm -rf " + quote(symlinkTarget), function (error, stdout, stderr) {
                     if (error) {
                         throw new Error(error);
                     }
@@ -120,7 +120,7 @@ m.symlinkProjectDependencies.label = "Symlinking dependencies";
 
 
 m.npmLinkProject = function(project, cb) {
-    cp.exec("cd " + path.join(project.localPath) + "; npm link", function (err, stdout, stderr) {
+    cp.exec("cd " + quote(path.join(project.localPath)) + "; npm link", function (err, stdout, stderr) {
         if (err) {
             console.log(project);
             throw err;
@@ -132,7 +132,7 @@ m.npmLinkProject = function(project, cb) {
 m.npmLinkProject.label = "npm linking";
 
 m.updateProjectSubmodules = function(project, cb) {
-    cp.exec("cd " + path.join(project.localPath) + "; git submodule update --init", function (err, stdout, stderr) {
+    cp.exec("cd " + quote(path.join(project.localPath)) + "; git submodule update --init", function (err, stdout, stderr) {
         if (err) throw err;
         util.print(".");
         cb();
@@ -176,4 +176,8 @@ function symlinkExists(path) {
     } else {
         throw new Error("Expected '" + path + "' to be a symlink.");
     }
+}
+
+function quote(path) {
+    return '"' + path + '"';
 }
