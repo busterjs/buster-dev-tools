@@ -100,7 +100,15 @@ m.symlinkProjectDependencies = function (project, cb) {
             var dependency = dependencies.shift();
             if (isBusterModule(dependency)) {
                 var symlinkTarget = path.join(pkgNodeModules, dependency);
-                cp.exec("rm -rf " + quote(symlinkTarget), function (error, stdout, stderr) {
+
+                var cmd;
+                if (process.platform == "win32") {
+                    cmd = "rmdir /s /q"
+                } else {
+                    cmd = "rm -rf"
+                }
+
+                cp.exec(cmd + " " + quote(symlinkTarget), function (error, stdout, stderr) {
                     if (error) {
                         throw new Error(error);
                     }
