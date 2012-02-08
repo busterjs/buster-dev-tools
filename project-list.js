@@ -3,15 +3,15 @@ module.exports = [
     "buster-util",
     "buster-user-agent-parser",
     "buster-terminal",
+    "buster-analyzer",
+    "buster-module-loader",
     "buster-core",
-    "buster-glob",
     "buster-assertions",
     "buster-format",
-    "buster-promise",
-    "buster-module-loader",
     "buster-evented-logger",
     "buster-test",
     "sinon-buster",
+    "buster-glob",
     "buster-resources",
     "buster-capture-server",
     "buster-bayeux-emitter",
@@ -22,5 +22,6 @@ module.exports = [
     "buster-cli",
     "buster-test-cli",
     "buster-static",
-    "buster"
+    "buster",
+    "buster-jstestdriver"
 ];
