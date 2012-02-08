@@ -13,16 +13,16 @@ m.withProjects = function(projects, handlers) {
         var project = projects[i];
 
         if (typeof project == "string") {
-            project = {name: project, gitUrl: "git@gitorious.org:buster/" + project + ".git"}
+            project = {name: project, gitUrl: "git://github.com/busterjs/" + project + ".git"}
         }
-        project.localPath = path.resolve(__dirname + "/../" + project.name);
+        project.localPath = path.resolve(path.join(__dirname, "..", project.name));
 
         projects[i] = project;
     }
 
     var handler = handlers.shift();
     if (handler == undefined) {
-        console.log("DONE LOL");
+        console.log("Finished!");
         return;
     }
 
@@ -60,18 +60,21 @@ m.cloneProject = function (project, cb) {
 m.cloneProject.label = "Cloning projects";
 
 m.updateProject = function (project, cb) {
-    cp.exec("cd " + project.localPath + "; git pull origin master", function (err, stdout, stderr) {
-        if (err) throw err;
-        util.print(".");
-        cb();
-    });
+    if (directoryExists(project.localPath)) {
+        cp.exec("cd " + project.localPath + "; git pull origin master", function (err, stdout, stderr) {
+            if (err) throw err;
+            util.print(".");
+            cb();
+        });
+    } else {
+        m.cloneProject(project, cb);
+    }
 };
 m.updateProject.label = "Updating projects";
 
 m.symlinkProjectDependencies = function (project, cb) {
-    var pkg = JSON.parse(fs.readFileSync(process.cwd() + "/" + project.name + "/package.json"));
-    var pkgRoot = process.cwd() + "/" + project.name;
-    var pkgNodeModules = pkgRoot + "/node_modules";
+    var pkg = JSON.parse(fs.readFileSync(path.join(project.localPath, "package.json")));
+    var pkgNodeModules = path.join(project.localPath, "node_modules");
     if (!directoryExists(pkgNodeModules)) {
         fs.mkdirSync(pkgNodeModules, 0777);
     }
@@ -95,13 +98,13 @@ m.symlinkProjectDependencies = function (project, cb) {
         } else {
             var dependency = dependencies.shift();
             if (isBusterModule(dependency)) {
-                var symlinkTarget = pkgNodeModules + "/" + dependency;
+                var symlinkTarget = path.join(pkgNodeModules, dependency);
                 cp.exec("rm -rf " + symlinkTarget, function (error, stdout, stderr) {
                     if (error) {
                         throw new Error(error);
                     }
 
-                    fs.symlinkSync(process.cwd() + "/" + dependency, symlinkTarget);
+                    fs.symlinkSync(path.resolve(path.join(__dirname, "..", dependency)), symlinkTarget);
                     util.print(".");;
                     operator();
                 });
@@ -117,7 +120,7 @@ m.symlinkProjectDependencies.label = "Symlinking dependencies";
 
 
 m.npmLinkProject = function(project, cb) {
-    cp.exec("cd " + process.cwd() + "/" + project.name + "; npm link", function (err, stdout, stderr) {
+    cp.exec("cd " + path.join(project.localPath) + "; npm link", function (err, stdout, stderr) {
         if (err) {
             console.log(project);
             throw err;
@@ -128,35 +131,14 @@ m.npmLinkProject = function(project, cb) {
 }
 m.npmLinkProject.label = "npm linking";
 
-m.initProjectSubmodules = function(project, cb) {
-    cp.exec("cd " + process.cwd() + "/" + project.name + "; git submodule update --init", function (err, stdout, stderr) {
+m.updateProjectSubmodules = function(project, cb) {
+    cp.exec("cd " + path.join(project.localPath) + "; git submodule update --init", function (err, stdout, stderr) {
         if (err) throw err;
         util.print(".");
         cb();
     });
 }
-m.initProjectSubmodules.label = "Initializing submodules";
-
-m.removeSinon = function (project, cb) {
-    cp.exec("rm -rf " + project + "/node_modules/sinon", function (error, stdout, stderr) {
-        if (!error) util.print(".");
-        cb();
-    });
-}
-m.removeSinon.label = "Removing stable Sinon.JS";
-
-m.addSinon = function (project, cb) {
-    var sinonPath = project + "/node_modules/sinon";
-    if (directoryExists(sinonPath)) {
-        cp.exec("rm -rf " + sinonPath + " && git clone git://github.com/cjohansen/Sinon.JS " + sinonPath, function (err, stdout, stderr) {
-            util.print(".");
-            cb();
-        });
-    } else {
-        cb();
-    }
-}
-m.addSinon.label = "Adding Sinon.JS HEAD";
+m.updateProjectSubmodules.label = "Initializing submodules";
 
 function isBusterModule(module) {
     for (var i = 0, ii = projects.length; i < ii; i++) {
