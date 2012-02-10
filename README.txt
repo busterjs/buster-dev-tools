@@ -1,3 +1,3 @@
 Useful tools for Buster.JS developers.
 
-Add a link to the docs here.
+Usage: http://busterjs.org/docs/developers/
