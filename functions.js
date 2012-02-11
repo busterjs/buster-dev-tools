@@ -99,6 +99,7 @@ m.symlinkProjectDependencies = function (project, cb) {
         } else {
             var dependency = dependencies.shift();
             if (isBusterModule(dependency)) {
+                var symlinkSource = path.resolve(path.join(__dirname, "..", dependency));
                 var symlinkTarget = path.join(pkgNodeModules, dependency);
 
                 var cmd;
@@ -108,15 +109,23 @@ m.symlinkProjectDependencies = function (project, cb) {
                     cmd = "rm -rf"
                 }
 
-                cp.exec(cmd + " " + quote(symlinkTarget), function (error, stdout, stderr) {
-                    if (error) {
-                        throw new Error(error);
-                    }
-
-                    fs.symlinkSync(path.resolve(path.join(__dirname, "..", dependency)), symlinkTarget);
+                function performSymlink() {
+                    fs.symlinkSync(symlinkSource, symlinkTarget, "dir");
                     util.print(".");;
                     operator();
-                });
+                }
+
+                if (directoryExists(symlinkTarget)) {
+                    cp.exec(cmd + " " + quote(symlinkTarget), function (error, stdout, stderr) {
+                        if (error) {
+                            throw new Error(error);
+                        }
+
+                        performSymlink();
+                    });
+                } else {
+                    performSymlink();
+                }
             } else {
                 operator();
             }
@@ -162,7 +171,7 @@ function isBusterModule(module) {
 function directoryExists(path) {
     var stat;
     try {
-        stat = fs.statSync(path);
+        stat = fs.lstatSync(path);
     } catch(e) {
         return false;
     }
