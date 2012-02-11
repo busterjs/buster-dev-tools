@@ -171,7 +171,7 @@ function isBusterModule(module) {
 function directoryExists(path) {
     var stat;
     try {
-        stat = fs.lstatSync(path);
+        stat = fs.statSync(path);
     } catch(e) {
         return false;
     }
