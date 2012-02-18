@@ -1,4 +1,4 @@
-module.exports = [
+var projects = [
     {name: "sinon", gitUrl: "git://github.com/cjohansen/Sinon.JS.git"},
     "buster-util",
     "buster-user-agent-parser",
@@ -26,3 +26,7 @@ module.exports = [
     "buster",
     "buster-jstestdriver"
 ];
+
+try { projects = require("./local").concat(projects) } catch(e){};
+
+module.exports = projects;
