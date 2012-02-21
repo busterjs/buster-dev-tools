@@ -4,7 +4,6 @@ module.exports = [
     "buster-user-agent-parser",
     "buster-terminal",
     "buster-analyzer",
-    "buster-module-loader",
     "buster-core",
     "buster-assertions",
     "buster-format",
