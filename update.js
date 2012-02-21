@@ -1,5 +1,4 @@
 var projects = require("./project-list");
-try { require("./local") } catch(e){};
 var f = require("./functions");
 
 var argv = process.argv.slice(2);
