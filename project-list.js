@@ -23,7 +23,8 @@ var projects = [
     "buster-test-cli",
     "buster-static",
     "buster",
-    "buster-jstestdriver"
+    "buster-jstestdriver",
+    "buster-html-doc"
 ];
 
 try { projects = require("./local").concat(projects) } catch(e){};
