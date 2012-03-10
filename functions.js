@@ -139,7 +139,8 @@ m.symlinkProjectDependencies.label = "Symlinking dependencies";
 
 m.npmLinkProject = function(project, cb) {
     process.chdir(project.localPath);
-    cp.exec("npm link", function (err, stdout, stderr) {
+    var cmd = process.platform == "win32" ? "install" : "link";
+    cp.exec("npm " + cmd, function (err, stdout, stderr) {
         if (err) {
             console.log(project);
             throw err;
