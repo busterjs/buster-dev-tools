@@ -12,12 +12,12 @@ if (args.indexOf("-h") > -1 || args.indexOf("--help") > -1) {
 }
 
 if (args.indexOf("install") > -1) {
-    dt.doOperations(projects, [dt.clone, dt.installDeps]);
+    dt.doOperations(projects, [dt.clone, dt.submodules, dt.installDeps]);
     return;
 }
 
 if (args.indexOf("update") > -1) {
-    dt.doOperations(projects, [dt.pull, dt.installDeps]);
+    dt.doOperations(projects, [dt.pull, dt.submodules, dt.installDeps]);
     return;
 }
 
