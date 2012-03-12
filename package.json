@@ -1,0 +1,17 @@
+{
+    "name": "buster-dev-tools",
+    "version": "0.1.0",
+    "author": { "name": "August Lilleaas and Christian Johansen" },
+    "contributors": [{
+        "name": "August Lilleaas",
+        "email": "august@augustl.com",
+        "url": "http://augustl.com"
+    }, {
+        "name": "Christian Johansen",
+        "email": "christian@cjohansen.no",
+        "url": "http://cjohansen.no"
+    }],
+    "bin": {
+        "buster-dev-tools": "./bin/buster-dev-tools"
+    }
+}
