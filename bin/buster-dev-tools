@@ -8,7 +8,7 @@ if (args.indexOf("-h") > -1 || args.indexOf("--help") > -1) {
     console.log();
     console.log("  install   Installs all the things.");
     console.log("   update   Updates all the things.");
-    console.log("     deps   Reinstalls all non-buster deps..");
+    console.log("     deps   Reinstalls all non-buster deps.");
     return;
 }
 
