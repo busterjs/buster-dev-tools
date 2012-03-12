@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+var dt = require("../lib/buster-dev-tools");
+var projects = require("../project-list");
+
+var args = process.argv.slice(2);
+if (args.indexOf("-h") > -1 || args.indexOf("--help") > -1) {
+    console.log("buster-dev-tools");
+    console.log();
+    console.log("  install   Installs all the things.");
+    console.log("   update   Updates all the things.");
+    return;
+}
+
+if (args.indexOf("install") > -1) {
+    dt.doOperations(projects, [dt.clone, dt.installDeps]);
+    return;
+}
+
+if (args.indexOf("update") > -1) {
+    dt.doOperations(projects, [dt.pull, dt.installDeps]);
+    return;
+}
+
+if (args.indexOf("deps") > -1) {
+    dt.doOperations(projects, [dt.installDeps]);
+    return;
+}
+
+process.stderr.write("Unrecognized option. See --help.");
+process.exit(1);
