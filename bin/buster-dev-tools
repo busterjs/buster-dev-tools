@@ -27,5 +27,5 @@ if (args.indexOf("deps") > -1) {
     return;
 }
 
-process.stderr.write("Unrecognized option. See --help.");
+process.stderr.write("Unrecognized option. See --help.\n");
 process.exit(1);
