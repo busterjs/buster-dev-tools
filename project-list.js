@@ -1,5 +1,5 @@
 var projects = [
-    {name: "sinon", gitUrl: "git://github.com/cjohansen/Sinon.JS.git"},
+    {name: "sinon", gitUrl: "https://github.com/cjohansen/Sinon.JS.git"},
     "buster-util",
     "buster-user-agent-parser",
     "buster-terminal",
