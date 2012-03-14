@@ -19,7 +19,7 @@ if (arg == "-h" || args == "--help") {
     console.log("     deps   Reinstalls all non-buster deps.");
     return;
 }
-debugger;
+
 if (arg == "install") {
     dt.doOperations(projects, [dt.clone, dt.submodules, dt.installDeps]);
     return;
