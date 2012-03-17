@@ -20,17 +20,17 @@ if (arg == "-h" || args == "--help") {
     return;
 }
 
-if (args == "install") {
+if (arg == "install") {
     dt.doOperations(projects, [dt.clone, dt.submodules, dt.installDeps]);
     return;
 }
 
-if (args == "update") {
+if (arg == "update") {
     dt.doOperations(projects, [dt.pull, dt.submodules, dt.installDeps]);
     return;
 }
 
-if (args == "deps") {
+if (arg == "deps") {
     dt.doOperations(projects, [dt.installDeps]);
     return;
 }
