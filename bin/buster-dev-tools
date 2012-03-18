@@ -14,18 +14,12 @@ var arg = args[0];
 if (arg == "-h" || args == "--help") {
     console.log("buster-dev-tools");
     console.log();
-    console.log("  install   Installs all the things.");
-    console.log("   update   Updates all the things.");
+    console.log("     pull   Clone and/or pull all the repos.");
     console.log("     deps   Reinstalls all non-buster deps.");
     return;
 }
 
-if (args == "install") {
-    dt.doOperations(projects, [dt.clone, dt.submodules, dt.installDeps]);
-    return;
-}
-
-if (args == "update") {
+if (args == "pull") {
     dt.doOperations(projects, [dt.pull, dt.submodules, dt.installDeps]);
     return;
 }
