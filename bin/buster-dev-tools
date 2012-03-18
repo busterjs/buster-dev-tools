@@ -24,7 +24,7 @@ if (args == "pull") {
     return;
 }
 
-if (args == "deps") {
+if (arg == "deps") {
     dt.doOperations(projects, [dt.installDeps]);
     return;
 }
