@@ -23,8 +23,8 @@ var projects = [
     "buster-test-cli",
     "buster-static",
     "buster",
-    "buster-jstestdriver",
-    "buster-html-doc"
+//    "buster-jstestdriver",    // not really necessary; depends on buster-html-doc
+//    "buster-html-doc"         // not really necessary; depends on contextify (through jsdom) which makes problems on Win
 ];
 
 try { projects = require("./local").concat(projects) } catch(e){};
