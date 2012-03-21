@@ -19,7 +19,7 @@ if (arg == "-h" || args == "--help") {
     return;
 }
 
-if (args == "pull") {
+if (arg == "pull") {
     dt.doOperations(projects, [dt.pull, dt.submodules, dt.installDeps]);
     return;
 }
