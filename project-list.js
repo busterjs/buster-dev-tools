@@ -6,7 +6,7 @@ function defaultGitUrl(projectName) {
 }
 
 var projects = [
-    {name: "sinon", gitUrl: "https://github.com/cjohansen/Sinon.JS.git"},
+    { name: "sinon", gitUrl: "https://github.com/cjohansen/Sinon.JS.git" },
     "buster-util",
     "buster-user-agent-parser",
     "buster-terminal",
@@ -29,9 +29,9 @@ var projects = [
     "buster-cli",
     "buster-test-cli",
     "buster-static",
-    "buster"
-//    ,"buster-jstestdriver"    // not really necessary; depends on buster-html-doc
-//    ,"buster-html-doc"         // not really necessary; depends on contextify (through jsdom) which makes problems on Win
+    "buster",
+    { name: "buster-jstestdriver", skip: platformIsWindows }, // not really necessary; depends on buster-html-doc
+    { name: "buster-html-doc"    , skip: platformIsWindows }  // not really necessary; depends on contextify (through jsdom) which makes problems on Win
 ];
 
 // Pull in additional projects listed in ./local, same format as above.
@@ -43,9 +43,15 @@ function initProject(project) {
     }
     project.gitUrl    = project.gitUrl || defaultGitUrl(project.name);
     project.localPath = path.join(devDir, project.name);
+    project.skip      = project.skip || function () { return false; }; // do not skip entire projects by default
     return project;
+}
+
+function platformIsWindows() {
+    return process.platform == "win32";
 }
 
 module.exports = projects
     .map(initProject)
+    .filter(function(p) { return !p.skip(); })
 ;
