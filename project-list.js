@@ -1,8 +1,9 @@
-var path = require("path");
-var util = require("./lib/util");
+var path = require("path"), util = require("./lib/util");
 var IfOnWin = util.IfOnWin,
     True    = util.True,
-    False   = util.False
+    False   = util.False,
+    And     = util.And,
+    itMatches = util.itMatches
 ;
 
 function defaultGitUrl(projectName) {
@@ -10,10 +11,17 @@ function defaultGitUrl(projectName) {
 }
 
 var projects = [
-    { name: "buster-jstestdriver", skip: IfOnWin }, // not really necessary; depends on buster-html-doc
-    { name: "buster-html-doc"    , skipDep: IfOnWin.AndNameIn("jsdom")
-    .Then(util.dummyAction, "contextify@0.1.1") 
-    }, // not really necessary; depends on contextify (through jsdom) which makes problems on Win
+    { name: "buster-jstestdriver", skip: IfOnWin }, // skip entire project on Windows; depends on buster-html-doc
+    { name: "buster-bayeux-emitter"
+        ,skipDep: IfOnWin.And(itMatches, "faye", "blahatest") // skip npm install of dependency faye on Windows
+    },
+    { name: "buster-html-doc"
+        // Here's a more complex workaround: on Windows, jsdom fails because npm can't install it's dependency contextify
+        // So what we do is put in a dummy contextify s.t. npm will not try to install it
+        // Note that we do NOT entirely skip the installation of jsdom
+        ,skipDep: IfOnWin.And(itMatches, "jsdom").Then(util.dummyAction, "contextify@0.1.1")
+    },
+    { name: "buster-docs", skip: True },  // just for demo, will be left out completely
     { name: "sinon", gitUrl: "https://github.com/cjohansen/Sinon.JS.git" },
     "buster-util",
     "buster-user-agent-parser",
@@ -29,7 +37,6 @@ var projects = [
     "buster-glob",
     "buster-resources",
     "buster-capture-server",
-    { name: "buster-bayeux-emitter", skipDep: IfOnWin.AndNameIn("faye", "blahatest") },
     "buster-configuration",
     "buster-client",
     "buster-args",
@@ -38,7 +45,6 @@ var projects = [
     "buster-test-cli",
     "buster-static",
     "buster",
-    { name: "buster-docs"        , skip: True    }  // for demo, will be left out completely
 ];
 
 // Pull in additional projects listed in ./local, same format as above.
