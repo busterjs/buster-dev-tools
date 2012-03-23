@@ -1,5 +1,9 @@
-var path  = require("path");
-var devDir = path.resolve(__dirname, "../"); // dev env is one folder up from this file, independent of current working dir
+var path = require("path");
+var util = require("./lib/util");
+var IfOnWin = util.IfOnWin,
+    True    = util.True,
+    False   = util.False
+;
 
 function defaultGitUrl(projectName) {
     return "https://github.com/busterjs/" + projectName + ".git";
@@ -21,7 +25,7 @@ var projects = [
     "buster-glob",
     "buster-resources",
     "buster-capture-server",
-    { name: "buster-bayeux-emitter", skipDep: skipOnWindows("faye", "blahatest") },
+    { name: "buster-bayeux-emitter", skipDep: IfOnWin.AndNameIn("faye", "blahatest") },
     "buster-configuration",
     "buster-client",
     "buster-args",
@@ -30,38 +34,24 @@ var projects = [
     "buster-test-cli",
     "buster-static",
     "buster",
-    { name: "buster-jstestdriver", skip: platformIsWindows }, // not really necessary; depends on buster-html-doc
-    { name: "buster-html-doc"    , skip: platformIsWindows }  // not really necessary; depends on contextify (through jsdom) which makes problems on Win
+    { name: "buster-jstestdriver", skip: IfOnWin }, // not really necessary; depends on buster-html-doc
+    { name: "buster-html-doc"    , skip: IfOnWin }, // not really necessary; depends on contextify (through jsdom) which makes problems on Win
+    { name: "buster-docs"        , skip: True    }  // for demo, will be left out completely
 ];
 
 // Pull in additional projects listed in ./local, same format as above.
 try { projects = require("./local").concat(projects) } catch(e){};
 
+// Default values defined here:
 function initProject(project) {
     if (typeof project == "string") {
         project = { name: project };
     }
+    project.localPath = path.join(util.devDir, project.name);
     project.gitUrl    = project.gitUrl || defaultGitUrl(project.name);
-    project.localPath = path.join(devDir, project.name);
-    project.skip      = project.skip || function () { return false; }; // do not skip entire projects by default
-    project.skipDep   = project.skipDep || function() { return false; }; // install any (external) deps by default
+    project.skip      = project.skip || False; // do not skip entire projects by default
+    project.skipDep   = project.skipDep || False; // install any (external) deps by default
     return project;
-}
-
-function platformIsWindows() {
-    return process.platform == "win32";
-}
-
-function skipOnWindows() {
-    var toBeSkipped = Array.prototype.slice.call(arguments, 0);
-    return function (depName, depVersion) {
-        if (platformIsWindows() && toBeSkipped.some(function(d) { return d == depName; })) {
-            // could take alternative action here, e.g. getting it from somewhere else than thru npm
-            console.warn("Warning: skipped dependency " + depName + "@" + depVersion + " of " + this.name);
-            return true; // tell operation to skip it
-        }
-        return false;
-    };
 }
 
 module.exports = projects
