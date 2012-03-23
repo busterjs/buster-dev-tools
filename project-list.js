@@ -1,8 +1,6 @@
 var path = require("path"), util = require("./lib/util");
-var IfOnWin = util.IfOnWin,
-    True    = util.True,
-    False   = util.False,
-    And     = util.And,
+var True = util.True, False = util.False, If = util.If,
+    onWindows = util.onWindows, onMacOS= util.onMacOS, onLinux = util.onLinux,
     itMatches = util.itMatches
 ;
 
@@ -11,17 +9,17 @@ function defaultGitUrl(projectName) {
 }
 
 var projects = [
-    { name: "buster-jstestdriver", skip: IfOnWin }, // skip entire project on Windows; depends on buster-html-doc
+    { name: "buster-jstestdriver", skip: If(onWindows) }, // skip entire project on Windows; depends on buster-html-doc
     { name: "buster-bayeux-emitter"
-        ,skipDep: IfOnWin.And(itMatches, "faye", "blahatest") // skip npm install of dependency faye on Windows
+        ,skipDep: If(onWindows).And(itMatches, "faye", "foobar") // skip npm install of dependency faye (and possibly foobar) on Windows
     },
     { name: "buster-html-doc"
         // Here's a more complex workaround: on Windows, jsdom fails because npm can't install it's dependency contextify
         // So what we do is put in a dummy contextify s.t. npm will not try to install it
         // Note that we do NOT entirely skip the installation of jsdom
-        ,skipDep: IfOnWin.And(itMatches, "jsdom").Then(util.dummyAction, "contextify@0.1.1")
+        ,skipDep: If(onWindows).And(itMatches, "jsdom").Then(util.dummyAction, "contextify@0.1.1")
     },
-    { name: "buster-docs", skip: True },  // just for demo, will be left out completely
+    { name: "buster-docs", skip: True },  // just for demo, entire project will be skipped
     { name: "sinon", gitUrl: "https://github.com/cjohansen/Sinon.JS.git" },
     "buster-util",
     "buster-user-agent-parser",
