@@ -10,6 +10,10 @@ function defaultGitUrl(projectName) {
 }
 
 var projects = [
+    { name: "buster-jstestdriver", skip: IfOnWin }, // not really necessary; depends on buster-html-doc
+    { name: "buster-html-doc"    , skipDep: IfOnWin.AndNameIn("jsdom")
+    .Then(util.dummyAction, "contextify@0.1.1") 
+    }, // not really necessary; depends on contextify (through jsdom) which makes problems on Win
     { name: "sinon", gitUrl: "https://github.com/cjohansen/Sinon.JS.git" },
     "buster-util",
     "buster-user-agent-parser",
@@ -34,8 +38,6 @@ var projects = [
     "buster-test-cli",
     "buster-static",
     "buster",
-    { name: "buster-jstestdriver", skip: IfOnWin }, // not really necessary; depends on buster-html-doc
-    { name: "buster-html-doc"    , skip: IfOnWin }, // not really necessary; depends on contextify (through jsdom) which makes problems on Win
     { name: "buster-docs"        , skip: True    }  // for demo, will be left out completely
 ];
 
