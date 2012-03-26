@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
+require("./test/fn-helpers-test.js");
+require("./test/dev-util-test.js");
 require("./test/connectives-test.js");
