@@ -2,8 +2,10 @@ var testCase = require("buster").testCase;
 var assert = buster.assert;
 var refute = buster.refute;
 
-var cn = require("../lib/util");
-var True = cn.True, False = cn.False, If = cn.If;
+var cn = require("../lib/connectives");
+var True  = cn.True, 
+    False = cn.False, 
+    If    = cn.If;
 
 testCase("Connectives", {
     setUp: function() {
