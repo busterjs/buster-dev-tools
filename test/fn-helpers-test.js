@@ -103,18 +103,14 @@ testCase("fn-helpers", {
             assert.exception(function() { partialApply("foo", 32);   }, "TypeError", "when called with a string and a number");
             assert.exception(function() { partialApply("foo", f);    }, "TypeError", "when called with a string and a function");
         },
-        // maybe better make it less picky and have it just return f in this case? (would simplify client code)
-        "throws Error when called with a function but empty args array": function() {
-            var f = function() {}; // just some function
-            //assert.isFunction(partialApply(f, []), "when called with a function and empty array");
-            assert.exception(function() { partialApply(f, []); }, "Error", "when called with a function and an empty array");
-        },
 
         "//throws TypeError if second arg is not an array": function() {
         },
 
         "returns a function when called with proper args": function() {
             var f = function() {}; // just some function
+            assert.isFunction(partialApply(f, []),          "when called with a function and an empty array");
+            assert.same(f, partialApply(f, []),             "returns same function when called with empty args array");
             assert.isFunction(partialApply(f, [null]),      "when called with a function and an array containing null");
             assert.isFunction(partialApply(f, [undefined]), "when called with a function and an array containing undefined");
             assert.isFunction(partialApply(f, [1]),         "when called with a function and an array containing one integer");
@@ -138,7 +134,7 @@ testCase("fn-helpers", {
                 ,[72, null, ["qumbl"]]
             ].forEach(function(additionalArgs) {
                 [    [null], // these are the arguments that are partially applied beforehand
-                    //,[], // maybe this should be allowed; see above
+                    ,[], // yes, we do allow empty args array - just returns the function as is
                     ,[undefined]
                     ,[1]
                     ,["one"]
