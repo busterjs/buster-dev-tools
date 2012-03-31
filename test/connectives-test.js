@@ -33,10 +33,10 @@ testCase("Connectives", {
                ,function() { obj.outer();              }
                ,function() { obj.outer("y", 23, 77);   }
                ,function() { outer.call(this, 42);     }
-            //   ,function() { outer.call("bar", "foo"); } // only equal, not same
-            //   ,function() { outer.call(0, baz);       } // only equal, not same
-            //   ,function() { outer();                  } // undefined vs. some big thing
-            //   ,function() { outer.call(null, 42);     } // null vs. some big thing
+            //   ,function() { outer.call("bar", "foo"); } // thisValue: only equal, not same
+            //   ,function() { outer.call(0, baz);       } // thisValue: only equal, not same
+            //   ,function() { outer();                  } // thisValue: undefined vs. some big thing
+            //   ,function() { outer.call(null, 42);     } // thisValue: null vs. some big thing
             ].forEach(function(t) {
                 t();
                 assert.equals(inner.callCount, outer.callCount, "exact same call counts");
