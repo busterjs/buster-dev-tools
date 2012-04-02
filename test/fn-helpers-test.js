@@ -115,8 +115,29 @@ testCase("fn-helpers", {
 
         },
 
-        "//leaves `this` dynamically scoped": function() {
-            
+        "leaves `this` dynamically scoped": function() {
+            var f = this.spy();
+            var g = partialApply(f, "foo", 7);
+            var o1 = { g: g };
+            var o2 = { g: g };
+
+            o1.g();
+            assert.same(f.lastCall.thisValue, o1, "`this` = o1");
+
+            o2.g();
+            assert.same(f.lastCall.thisValue, o2, "`this` = o2");
+
+            g();
+            assert.same(f.lastCall.thisValue, global, "`this` implicit [replaced by global object]");
+
+            g.call(undefined);
+            assert.same(f.lastCall.thisValue, global, "`this` = undefined [replaced by global object]");
+
+            g.call(null);
+            assert.same(f.lastCall.thisValue, global, "`this` = null [replaced by global object]");
+
+            g.call(this);
+            assert.same(f.lastCall.thisValue, this, "`this` = this [this in test context]");
         }
 
     }
