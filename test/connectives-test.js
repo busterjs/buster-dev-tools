@@ -42,7 +42,7 @@ testCase("Connectives", {
                 assert.equals(inner.callCount, outer.callCount, "exact same call counts");
                 assert.equals(inner.lastCall.args, outer.lastCall.args, "should pass over arguments");
                 assert.same(inner.lastCall.thisValue, outer.lastCall.thisValue, "should pass over thisValue");
-                assert.same(inner.lastCall.returnValue, outer.lastCall.returnValue, "should pass over returnValue");
+                assert.same(inner.lastCall.returnValue ? true : false, outer.lastCall.returnValue, "should pass over returnValue");
             });
         };
         this.nonFunctionArgTest = function(lhs, connectiveName) {
