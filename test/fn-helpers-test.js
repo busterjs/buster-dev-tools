@@ -3,46 +3,9 @@ var assert = buster.assert;
 var refute = buster.refute;
 
 var fh = require("../lib/fn-helpers");
-var toArray                = fh.toArray,
-    assert1stArgIsFunction = fh.assert1stArgIsFunction,
-    partialApply           = fh.partialApply
-;
+var partialApply = fh.partialApply;
 
 testCase("fn-helpers", {
-
-    "toArray(..)": {
-
-        "returns proper array when called with either array or `arguments`": function() {
-            refute.isArray(arguments, "arguments is NOT an array proper"); // just to make sure...
-            var empty = [];
-            var arrayOfArray = [[2,3,4]];
-            assert.same(toArray(empty),         empty,          "when called with empty array");
-            assert.same(toArray(arrayOfArray),  arrayOfArray,   "when called with array in array");
-            
-            assert.equals(toArray(arguments),   arguments,      "when called with empty `arguments`");
-            (function() {
-                assert.equals(toArray(arguments),   arguments,      "when called with non-empty `arguments`");
-            })(7, "foo", "bar");
-        },
-
-        "throws on improper arg": {
-
-            "when called with null or undefined": function() {
-                assert.exception( function() { toArray(); },            "TypeError", "when called with no arg");
-                assert.exception( function() { toArray(null); },        "TypeError", "when called with null");
-                assert.exception( function() { toArray(undefined); },   "TypeError", "when called with undefined");
-            },
-
-            "//when called with *something* that is not an array or `arguments`": function() {
-                assert.exception( function() { toArray({}); },              "TypeError", "when called with an object");
-                assert.exception( function() { toArray("foo"); },           "TypeError", "when called with a string");
-                assert.exception( function() { toArray(31415926); },        "TypeError", "when called with an integer");
-                assert.exception( function() { toArray(function() {}); },   "TypeError", "when called with a function");
-            },
-
-        },
-
-    },
 
     "partialApply": {
 

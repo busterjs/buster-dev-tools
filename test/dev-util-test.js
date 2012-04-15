@@ -10,6 +10,7 @@ var quote               = du.quote,
     directoryExists     = du.directoryExists,
     fileExists          = du.fileExists,
     itMatches           = du.itMatches,
+    isOptionalDep       = du.isOptionalDep,
     installNpmDummy     = du.installNpmDummy
 ;
 
@@ -17,15 +18,15 @@ testCase("dev-utils", {
 
     "quote": {
 
-            "just adds double-quotes around (stringified) arg": function() {
-                assert.equals(quote(),              '"undefined"');
-                assert.equals(quote(null),          '"null"');
-                assert.equals(quote(""),            '""');
-                assert.equals(quote('""'),          '""""');
-                assert.equals(quote(7),             '"7"');
-                assert.equals(quote(__filename),    '"' + __filename + '"');
-                assert.equals(quote(__dirname),     '"' + __dirname + '"');
-            },
+        "just adds double-quotes around (stringified) arg": function() {
+            assert.equals(quote(),              '"undefined"');
+            assert.equals(quote(null),          '"null"');
+            assert.equals(quote(""),            '""');
+            assert.equals(quote('""'),          '""""');
+            assert.equals(quote(7),             '"7"');
+            assert.equals(quote(__filename),    '"' + __filename + '"');
+            assert.equals(quote(__dirname),     '"' + __dirname + '"');
+        },
 
     },
 
@@ -63,7 +64,68 @@ testCase("dev-utils", {
 
     "itMatches": {
 
+        "throws if less than 2 args": function() {
+            assert.exception( function() { itMatches()      },  "Error", "when called with no arg");
+            assert.exception( function() { itMatches("foo") },  "Error", "when called with 1 arg");
+        },
+
+        "throws if passed a non-dependency object as last arg": function() {
+            assert.exception( function() { itMatches("foo", null)  },  "TypeError");
+            assert.exception( function() { itMatches("foo", "bar") },  "TypeError");
+        },
+
+        "throws if property `kind` is missing from last arg": function() {
+            assert.exception( function() { itMatches("foo", { name: "", version: "" })  },  "TypeError");
+        },
+
+        "throws if property `name` is missing from last arg": function() {
+            assert.exception( function() { itMatches("foo", { kind: "", version: "" })  },  "TypeError");
+        },
+
+        "throws if property `version` is missing from last arg": function() {
+            assert.exception( function() { itMatches("foo", { kind: "", name: "" })  },  "TypeError");
+        },
+
+        "returns false if name doesn't match exactly any arg": function() {
+            var d = { kind: "", name: "foo", version: "*" };
+            refute(itMatches("Foo", d));
+        },
+
+        "returns true if name matches first arg exactly": function() {
+            var d = { kind: "", name: "foo", version: "*" };
+            assert(itMatches("foo", "bar", d));
+        },
+
+        "returns true if name matches second arg exactly": function() {
+            var d = { kind: "", name: "foo", version: "*" };
+            assert(itMatches("bar", "foo", d));
+        },
+
         "//does semver compliant match": function() {
+        },
+
+    },
+
+    "isOptionalDep": {
+
+        "returns true if prop `kind` has value 'opt'": function() {
+            var d = { kind: "opt", name: "foo", version: "*" };
+            assert(isOptionalDep(d));
+        },
+
+        "returns false if prop `kind` has value 'regular'": function() {
+            var d = { kind: "regular", name: "foo", version: "*" };
+            refute(isOptionalDep(d));
+        },
+
+        "returns false if prop `kind` has value 'dev'": function() {
+            var d = { kind: "dev", name: "foo", version: "*" };
+            refute(isOptionalDep(d));
+        },
+
+        "throws if property `kind` is missing from arg": function() {
+            var d = { name: "foo", version: "*" };
+            assert.exception( function() { isOptionalDep(d)  },  "TypeError");
         },
 
     },

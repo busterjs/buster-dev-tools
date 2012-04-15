@@ -3,6 +3,7 @@ var path = require("path"),
     du = require("./lib/dev-util");
 var True = cn.True, False = cn.False, If = cn.If;
     onWindows = du.onWindows, onMacOS= du.onMacOS, onLinux = du.onLinux,
+    isOptionalDep   = du.isOptionalDep,
     itMatches       = du.itMatches,
     installNpmDummy = du.installNpmDummy,
     devDir          = du.devDir;
@@ -46,6 +47,7 @@ var projects = [
     "buster-test-cli",
     "buster-static",
     "buster",
+    "buster-dev-tools"
 ];
 
 // Pull in additional projects listed in ./local, same format as above.
@@ -59,7 +61,7 @@ function initProject(project) {
     project.localPath = path.join(devDir, project.name);
     project.gitUrl    = project.gitUrl || defaultGitUrl(project.name);
     project.skip      = project.skip || False; // do not skip entire projects by default
-    project.skipDep   = project.skipDep || False; // install any (external) deps by default
+    project.skipDep   = project.skipDep || If(isOptionalDep); // npm install regular and dev deps but no optional deps by default
     return project;
 }
 
