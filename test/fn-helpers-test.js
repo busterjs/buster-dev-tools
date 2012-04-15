@@ -45,7 +45,7 @@ testCase("fn-helpers", {
             assert.isFunction(partialApply(f, [[]]),        "when called with a function and an array containing one empty array");
         },
 
-        "passes any specified arguments *in front*": function() { // TODO: this test is way to clever!
+        "partially applied function gets additonal args from actual call *at end* of arg list": function() { // TODO: this test is way to clever!
             var f = this.spy();
             var pa = this.spy(partialApply);
             [    [null], // these are the arguments that are partially applied beforehand

@@ -16,6 +16,15 @@ var quote               = du.quote,
 
 testCase("dev-utils", {
 
+
+    "onWindows, onMacOS, onLinux - there must be exactly one!": function() {
+        var results = [du.onWindows(), du.onMacOS(), du.onLinux()];
+        var trueCount  = results.reduce( function(acc, v) { return acc + (v ? 1 : 0); }, 0 );
+        var falseCount = results.reduce( function(acc, v) { return acc + (v ? 0 : 1); }, 0 );
+        assert.equals(trueCount, 1,                 "trueCount, [" + results.join(",") + "]");
+        assert.equals(falseCount, results.length-1, falseCount + "falseCount, [" + results.join(",") + "]");
+    },
+
     "quote": {
 
         "just adds double-quotes around (stringified) arg": function() {
@@ -75,15 +84,18 @@ testCase("dev-utils", {
         },
 
         "throws if property `kind` is missing from last arg": function() {
-            assert.exception( function() { itMatches("foo", { name: "", version: "" })  },  "TypeError");
+            var d = { name: "", version: "" };
+            assert.exception( function() { itMatches("foo", d) },  "TypeError");
         },
 
         "throws if property `name` is missing from last arg": function() {
-            assert.exception( function() { itMatches("foo", { kind: "", version: "" })  },  "TypeError");
+            var d = { kind: "", version: "" };
+            assert.exception( function() { itMatches("foo", d)  },  "TypeError");
         },
 
         "throws if property `version` is missing from last arg": function() {
-            assert.exception( function() { itMatches("foo", { kind: "", name: "" })  },  "TypeError");
+            var d = { kind: "", name: "" };
+            assert.exception( function() { itMatches("foo", d)  },  "TypeError");
         },
 
         "returns false if name doesn't match exactly any arg": function() {

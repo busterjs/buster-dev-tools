@@ -65,29 +65,25 @@ testCase("Connectives", {
             this.callingItAlwaysYields(False, false);
         },
 
-        "True should NOT expose any properties": {
-            ".Then should NOT be exposed":      function() { refute.defined(True.Then); },
-            ".And should NOT be exposed":       function() { refute.defined(True.And);  },
-            ".Or should NOT be exposed":        function() { refute.defined(True.Or);   },
-            ".If should NOT be exposed":        function() { refute.defined(True.If);   },
-            ".Not should NOT be exposed":       function() { refute.defined(True.Not);  },
+        "True properties": function() {
+            var f = True;
+            var props = "[" + Object.keys(f).sort().join(",") + "]";
+            assert.equals(props, "[]");
         },
 
-        "False should NOT expose any properties": {
-            ".Then should NOT be exposed":      function() { refute.defined(False.Then); },
-            ".And should NOT be exposed":       function() { refute.defined(False.And);  },
-            ".Or should NOT be exposed":        function() { refute.defined(False.Or);   },
-            ".If should NOT be exposed":        function() { refute.defined(False.If);   },
-            ".Not should NOT be exposed":       function() { refute.defined(False.Not);  },
+        "False properties": function() {
+            var f = False;
+            var props = "[" + Object.keys(f).sort().join(",") + "]";
+            assert.equals(props, "[]");
         },
 
     },
 
     "`If`, wrapper for boolean expressions": {
 
-        "'Truth table' for `If`": function() {
-            this.callingItAlwaysYields(If(True),  true,  "If(True)");
-            this.callingItAlwaysYields(If(False), false, "If(False)");
+        "'Truth table": {
+            "If(True)":  function() { this.callingItAlwaysYields(If(True),  true ); },
+            "If(False)": function() { this.callingItAlwaysYields(If(False), false); },
         },
 
         "`If` called with non-function arg should throw TypeError": function() {
@@ -98,35 +94,27 @@ testCase("Connectives", {
             this.passOverTest(cn, "If");
         },
 
-        "`If` properties": {
-            ".Then should NOT be exposed":      function() { refute.defined(If.Then);   },
-            ".And should NOT be exposed":       function() { refute.defined(If.And);    },
-            ".Or should NOT be exposed":        function() { refute.defined(If.Or);     },
-            ".If should NOT be exposed":        function() { refute.defined(If.If);     },
-            "//.Not should be exposed":           function() { assert.defined(If.Not);    },
-            ".Else should NOT be exposed":      function() { refute.defined(If.Else);   },
-            ".ElseIf should NOT be exposed":    function() { refute.defined(If.ElseIf); },
+        "`If` properties": function() {
+            var f = If;
+            var props = "[" + Object.keys(f).sort().join(",") + "]";
+            assert.equals(props, "[]");
         },
 
-        "`If(function)` properties": {
-            ".Then should be exposed":      function() { assert.defined(If(this.spyId).Then); },
-            ".And should be exposed":       function() { assert.defined(If(this.spyId).And);  },
-            "//.Or should be exposed":        function() { assert.defined(If(this.spyId).Or);   },
-            ".If should NOT be exposed":    function() { refute.defined(If(this.spyId).If);   },
-            ".Not should NOT be exposed":   function() { refute.defined(If(this.spyId).Not);  },
-            "//.Else should be exposed":      function() { assert.defined(If.Else);             },
-            "//.ElseIf should be exposed":    function() { assert.defined(If.ElseIf);           },
+        "`If(function)` properties": function() {
+            var f = If(this.spyId);
+            var props = "[" + Object.keys(f).sort().join(",") + "]";
+            assert.equals(props, "[And,Then]"); //  "[And,Else,ElseIf,Then]"); //  
         },
 
     },
 
     "`And` boolean connective": {
 
-        "Truth table for And": function() {
-            this.callingItAlwaysYields(If(True) .And(True),  true,  "T And T");
-            this.callingItAlwaysYields(If(True) .And(False), false, "T And F");
-            this.callingItAlwaysYields(If(False).And(True),  false, "F And T");
-            this.callingItAlwaysYields(If(False).And(False), false, "F And F");
+        "Truth table": {
+            "T And T": function() { this.callingItAlwaysYields(If(True ).And(True ), true ); },
+            "T And F": function() { this.callingItAlwaysYields(If(True ).And(False), false); },
+            "F And T": function() { this.callingItAlwaysYields(If(False).And(True ), false); },
+            "F And F": function() { this.callingItAlwaysYields(If(False).And(False), false); },
         },
 
         "`And` called with non-function arg should throw TypeError": function() {
@@ -180,35 +168,27 @@ testCase("Connectives", {
             assert.equals(spyId.callCount, testCalls.length, "right conjunct should not have been called any more");
         },
 
-        "`If(..).And` properties": {
-            ".Then should NOT be exposed":      function() { refute.defined(If(True).And.Then); },
-            ".And should NOT be exposed":       function() { refute.defined(If(True).And.And);  },
-            ".Or should NOT be exposed":        function() { refute.defined(If(True).And.Or);   },
-            ".If should NOT be exposed":        function() { refute.defined(If(True).And.If);   },
-            "//.Not should be exposed":           function() { assert.defined(If(True).And.Not);  },
-            ".Else should NOT be exposed":      function() { refute.defined(If(True).And.Else);   },
-            ".ElseIf should NOT be exposed":    function() { refute.defined(If(True).And.ElseIf); },
+        "`If(..).And` properties": function() {
+            var f = If(True).And;
+            var props = "[" + Object.keys(f).sort().join(",") + "]";
+            assert.equals(props, "[]");
         },
 
-        "`If(..).And(function)` properties": {
-            ".Then should be exposed":      function() { assert.defined(If(True).And(this.spyId).Then);   },
-            ".And should be exposed":       function() { assert.defined(If(True).And(this.spyId).And);    },
-            "//.Or should be exposed":        function() { assert.defined(If(True).And(this.spyId).Or);   },
-            ".If should NOT be exposed":    function() { refute.defined(If(True).And(this.spyId).If);     },
-            ".Not should NOT be exposed":   function() { refute.defined(If(True).And(this.spyId).Not);    },
-            "//.Else should be exposed":      function() { assert.defined(If(True).And(this.spyId).Else);   },
-            "//.ElseIf should be exposed":    function() { assert.defined(If(True).And(this.spyId).ElseIf); },
+        "`If(..).And(function)` properties": function() {
+            var f = If(True).And(this.spyId);
+            var props = "[" + Object.keys(f).sort().join(",") + "]";
+            assert.equals(props, "[And,Then]"); //  "[And,Else,ElseIf,Then]"); //  
         },
 
     },
 
     "`Then` wrapper for boolean expressions and side-effects": {
 
-        "'Truth table' for Then": function() {
-            this.callingItAlwaysYields(If(True).Then(True),   true,  "If(True).Then(True)");
-            this.callingItAlwaysYields(If(True).Then(False),  false, "If(True).Then(False)");
-            this.callingItAlwaysYields(If(False).Then(True),  false, "If(False).Then(True)");
-            this.callingItAlwaysYields(If(False).Then(False), false, "If(False).Then(False)");
+        "'Truth table' for Then": {
+            "If(True).Then(True)":   function() { this.callingItAlwaysYields(If(True).Then(True),   true ); },
+            "If(True).Then(False)":  function() { this.callingItAlwaysYields(If(True).Then(False),  false); },
+            "If(False).Then(True)":  function() { this.callingItAlwaysYields(If(False).Then(True),  false); },
+            "If(False).Then(False)": function() { this.callingItAlwaysYields(If(False).Then(False), false); },
         },
 
         "`Then` called with non-function arg should throw TypeError": function() {
@@ -257,24 +237,16 @@ testCase("Connectives", {
             assert(f.calledTwice, "If(True).And(True).Then(f)");
         },
 
-        "`If(..).Then` properties": {
-            ".Then should NOT be exposed":      function() { refute.defined(If(True).Then.Then);   },
-            ".And should NOT be exposed":       function() { refute.defined(If(True).Then.And);    },
-            ".Or should NOT be exposed":        function() { refute.defined(If(True).Then.Or);     },
-            ".If should NOT be exposed":        function() { refute.defined(If(True).Then.If);     },
-            ".Not should NOT be exposed":       function() { refute.defined(If(True).Then.Not);    },
-            ".Else should NOT be exposed":      function() { refute.defined(If(True).Then.Else);   },
-            ".ElseIf NOT should be exposed":    function() { refute.defined(If(True).Then.ElseIf); },
+        "`If(..).Then` properties": function() {
+            var f = If(True).Then;
+            var props = "[" + Object.keys(f).sort().join(",") + "]";
+            assert.equals(props, "[]");
         },
 
-        "`If(..).Then(function)` properties": {
-            ".Then should NOT be exposed":  function() { refute.defined(If(True).Then(this.spyId).Then);   },
-            ".And should NOT be exposed":   function() { refute.defined(If(True).Then(this.spyId).And);    },
-            ".Or should NOT be exposed":    function() { refute.defined(If(True).Then(this.spyId).Or);     },
-            ".If should NOT be exposed":    function() { refute.defined(If(True).Then(this.spyId).If);     },
-            ".Not should NOT be exposed":   function() { refute.defined(If(True).Then(this.spyId).Not);    },
-            "//.Else should be exposed":      function() { assert.defined(If(True).Then(this.spyId).Else);   },
-            "//.ElseIf should be exposed":    function() { assert.defined(If(True).Then(this.spyId).ElseIf); },
+        "`If(..).Then(function)` properties": function() {
+            var f = If(True).Then(this.spyId);
+            var props = "[" + Object.keys(f).sort().join(",") + "]";
+            assert.equals(props, "[]"); // "[Else,ElseIf"]  //  
         },
     },
 
