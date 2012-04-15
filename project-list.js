@@ -65,7 +65,4 @@ function initProject(project) {
     return project;
 }
 
-module.exports = projects
-    .map(initProject)
-    .filter(function(p) { return !p.skip(); })
-;
+module.exports = projects.map(initProject);
