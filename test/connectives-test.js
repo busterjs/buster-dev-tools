@@ -3,9 +3,9 @@ var assert = buster.assert;
 var refute = buster.refute;
 
 var cn = require("../lib/connectives");
-var True  = cn.True, 
-    False = cn.False, 
-    If    = cn.If;
+var yes  = cn.yes, 
+    no   = cn.no, 
+    when = cn.when;
 
 testCase("Connectives", {
     setUp: function() {
@@ -55,100 +55,100 @@ testCase("Connectives", {
         }
     },
 
-    "Boolean constants True and False": {
+    "Boolean constants yes and no": {
 
-        "True should always return true, no matter what args / `this`": function() {
-            this.callingItAlwaysYields(True, true);
+        "yes should always return true, no matter what args / `this`": function() {
+            this.callingItAlwaysYields(yes, true);
         },
 
-        "False should always return false, no matter what args / `this`": function() {
-            this.callingItAlwaysYields(False, false);
+        "no should always return false, no matter what args / `this`": function() {
+            this.callingItAlwaysYields(no, false);
         },
 
-        "True properties": function() {
-            var f = True;
+        "yes properties": function() {
+            var f = yes;
             var props = "[" + Object.keys(f).sort().join(",") + "]";
             assert.equals(props, "[]");
         },
 
-        "False properties": function() {
-            var f = False;
+        "no properties": function() {
+            var f = no;
             var props = "[" + Object.keys(f).sort().join(",") + "]";
             assert.equals(props, "[]");
         },
 
     },
 
-    "`If`, wrapper for boolean expressions": {
+    "`when`, wrapper for boolean expressions": {
 
         "'Truth table": {
-            "If(True)":  function() { this.callingItAlwaysYields(If(True),  true ); },
-            "If(False)": function() { this.callingItAlwaysYields(If(False), false); },
+            "when(yes)": function() { this.callingItAlwaysYields(when(yes), true ); },
+            "when(no)":  function() { this.callingItAlwaysYields(when(no),  false); },
         },
 
-        "`If` called with non-function arg should throw TypeError": function() {
-            this.nonFunctionArgTest(cn, "If");
+        "`when` called with non-function arg should throw TypeError": function() {
+            this.nonFunctionArgTest(cn, "when");
         },
 
-        "`If(function)` should pass over arguments, thisValue and returnValue": function() {
-            this.passOverTest(cn, "If");
+        "`when(function)` should pass over arguments, thisValue and returnValue": function() {
+            this.passOverTest(cn, "when");
         },
 
-        "`If` properties": function() {
-            var f = If;
+        "`when` properties": function() {
+            var f = when;
             var props = "[" + Object.keys(f).sort().join(",") + "]";
             assert.equals(props, "[]");
         },
 
-        "`If(function)` properties": function() {
-            var f = If(this.spyId);
+        "`when(function)` properties": function() {
+            var f = when(this.spyId);
             var props = "[" + Object.keys(f).sort().join(",") + "]";
-            assert.equals(props, "[And,Then]"); //  "[And,Else,ElseIf,Then]"); //  
+            assert.equals(props, "[and,then]"); //  "[and,otherwise,then,unless]"); //  
         },
 
     },
 
-    "`And` boolean connective": {
+    "`and` boolean connective": {
 
         "Truth table": {
-            "T And T": function() { this.callingItAlwaysYields(If(True ).And(True ), true ); },
-            "T And F": function() { this.callingItAlwaysYields(If(True ).And(False), false); },
-            "F And T": function() { this.callingItAlwaysYields(If(False).And(True ), false); },
-            "F And F": function() { this.callingItAlwaysYields(If(False).And(False), false); },
+            "yes and yes": function() { this.callingItAlwaysYields(when(yes).and(yes), true ); },
+            "yes and no":  function() { this.callingItAlwaysYields(when(yes).and(no ), false); },
+            "no and yes":  function() { this.callingItAlwaysYields(when(no ).and(yes), false); },
+            "no and no":   function() { this.callingItAlwaysYields(when(no ).and(no ), false); },
         },
 
-        "`And` called with non-function arg should throw TypeError": function() {
+        "`and` called with non-function arg should throw TypeError": function() {
             var f = this.spyId; // just some function
-            // several ways to get to an And
-            this.nonFunctionArgTest(If(True),               "And");
-            this.nonFunctionArgTest(If(False),              "And");
-            this.nonFunctionArgTest(If(f),                  "And");
-            this.nonFunctionArgTest(If(True).And(True),     "And");
-            this.nonFunctionArgTest(If(False).And(True),    "And");
-            this.nonFunctionArgTest(If(f).And(True),        "And");
-            this.nonFunctionArgTest(If(True).And(False),    "And");
-            this.nonFunctionArgTest(If(False).And(False),   "And");
-            this.nonFunctionArgTest(If(f).And(False),       "And");
-            this.nonFunctionArgTest(If(True).And(f),        "And");
-            this.nonFunctionArgTest(If(False).And(f),       "And");
-            this.nonFunctionArgTest(If(f).And(f),           "And");
+            // several ways to get to an and
+            this.nonFunctionArgTest(when(yes),          "and");
+            this.nonFunctionArgTest(when(no),           "and");
+            this.nonFunctionArgTest(when(f),            "and");
+            this.nonFunctionArgTest(when(yes).and(yes), "and");
+            this.nonFunctionArgTest(when(no).and(yes),  "and");
+            this.nonFunctionArgTest(when(f).and(yes),   "and");
+            this.nonFunctionArgTest(when(yes).and(no),  "and");
+            this.nonFunctionArgTest(when(no).and(no),   "and");
+            this.nonFunctionArgTest(when(f).and(no),    "and");
+            this.nonFunctionArgTest(when(yes).and(f),   "and");
+            this.nonFunctionArgTest(when(no).and(f),    "and");
+            this.nonFunctionArgTest(when(f).and(f),     "and");
         },
 
-        "`And(function)` should pass over arguments, thisValue and returnValue": function() {
-            // make sure that argument passed to And is always called (short-circuit!)
-            // several ways to get to an And
-            this.passOverTest(If(True),                     "And");
-            this.passOverTest(If(True).And(True),           "And");
-            this.passOverTest(If(True).And(True).And(True), "And");
+        "`and(function)` should pass over arguments, thisValue and returnValue": function() {
+            // make sure that argument passed to `and` is always called (short-circuit!)
+            // several ways to get to an `and`
+            this.passOverTest(when(yes),                   "and");
+            this.passOverTest(when(yes).and(yes),          "and");
+            this.passOverTest(when(yes).and(yes).and(yes), "and");
         },
 
-        "And should be short-circuit": function() {
+        "`and` should be short-circuit": function() {
             var spyId = this.spyId;
-            var spyT = this.spy(True);
-            var spyF = this.spy(False);
+            var spyT = this.spy(yes);
+            var spyF = this.spy(no);
 
-            var trueAndX = If(spyT).And(spyId);
-            var falseAndX = If(spyF).And(spyId);
+            var yesAndX = when(spyT).and(spyId);
+            var noAndX  = when(spyF).and(spyId);
 
             var testCalls = [
                 function(f) { return f();                   },
@@ -159,94 +159,94 @@ testCase("Connectives", {
                 function(f) { return f.call({}, "bar", 77); },
             ];
 
-            testCalls.forEach(function(c) { c(trueAndX); });
+            testCalls.forEach(function(c) { c(yesAndX); });
             assert.equals(spyT.callCount,  testCalls.length, "left conjunct callCount");
             assert.equals(spyId.callCount, testCalls.length, "right conjunct callCount");
 
-            testCalls.forEach(function(c) { c(falseAndX); });
+            testCalls.forEach(function(c) { c(noAndX); });
             assert.equals(spyF.callCount,  testCalls.length, "left conjunct callCount");
             assert.equals(spyId.callCount, testCalls.length, "right conjunct should not have been called any more");
         },
 
-        "`If(..).And` properties": function() {
-            var f = If(True).And;
+        "`when(..).and` properties": function() {
+            var f = when(yes).and;
             var props = "[" + Object.keys(f).sort().join(",") + "]";
             assert.equals(props, "[]");
         },
 
-        "`If(..).And(function)` properties": function() {
-            var f = If(True).And(this.spyId);
+        "`when(..).and(function)` properties": function() {
+            var f = when(yes).and(this.spyId);
             var props = "[" + Object.keys(f).sort().join(",") + "]";
-            assert.equals(props, "[And,Then]"); //  "[And,Else,ElseIf,Then]"); //  
+            assert.equals(props, "[and,then]"); //  "[and,otherwise,then,unless]"); //  
         },
 
     },
 
-    "`Then` wrapper for boolean expressions and side-effects": {
+    "`then` wrapper for boolean expressions and side-effects": {
 
-        "'Truth table' for Then": {
-            "If(True).Then(True)":   function() { this.callingItAlwaysYields(If(True).Then(True),   true ); },
-            "If(True).Then(False)":  function() { this.callingItAlwaysYields(If(True).Then(False),  false); },
-            "If(False).Then(True)":  function() { this.callingItAlwaysYields(If(False).Then(True),  false); },
-            "If(False).Then(False)": function() { this.callingItAlwaysYields(If(False).Then(False), false); },
+        "'Truth table' for then": {
+            "when(yes).then(yes)": function() { this.callingItAlwaysYields(when(yes).then(yes), true ); },
+            "when(yes).then(no)":  function() { this.callingItAlwaysYields(when(yes).then(no),  false); },
+            "when(no).then(yes)":  function() { this.callingItAlwaysYields(when(no).then(yes),  false); },
+            "when(no).then(no)":   function() { this.callingItAlwaysYields(when(no).then(no),   false); },
         },
 
-        "`Then` called with non-function arg should throw TypeError": function() {
+        "`then` called with non-function arg should throw TypeError": function() {
             var f = this.spyId; // just some function
-            this.nonFunctionArgTest(If(True),             "Then");
-            this.nonFunctionArgTest(If(False),            "Then");
-            this.nonFunctionArgTest(If(f),                "Then");
-            this.nonFunctionArgTest(If(True).And(True),   "Then");
-            this.nonFunctionArgTest(If(False).And(True),  "Then");
-            this.nonFunctionArgTest(If(f).And(True),      "Then");
-            this.nonFunctionArgTest(If(True).And(False),  "Then");
-            this.nonFunctionArgTest(If(False).And(False), "Then");
-            this.nonFunctionArgTest(If(f).And(False),     "Then");
-            this.nonFunctionArgTest(If(True).And(f),      "Then");
-            this.nonFunctionArgTest(If(False).And(f),     "Then");
-            this.nonFunctionArgTest(If(f).And(f),         "Then");
+            this.nonFunctionArgTest(when(yes),          "then");
+            this.nonFunctionArgTest(when(no),           "then");
+            this.nonFunctionArgTest(when(f),            "then");
+            this.nonFunctionArgTest(when(yes).and(yes), "then");
+            this.nonFunctionArgTest(when(no).and(yes),  "then");
+            this.nonFunctionArgTest(when(f).and(yes),   "then");
+            this.nonFunctionArgTest(when(yes).and(no),  "then");
+            this.nonFunctionArgTest(when(no).and(no),   "then");
+            this.nonFunctionArgTest(when(f).and(no),    "then");
+            this.nonFunctionArgTest(when(yes).and(f),   "then");
+            this.nonFunctionArgTest(when(no).and(f),    "then");
+            this.nonFunctionArgTest(when(f).and(f),     "then");
         },
 
-        "`Then`(function)` should pass over arguments, thisValue and returnValue": function() {
-            // make sure that argument passed to Then is always called (short-circuit!)
-            // several ways to get to a Then
-            this.passOverTest(If(True),                     "Then");
-            this.passOverTest(If(True).And(True),           "Then");
-            this.passOverTest(If(True).And(True).And(True), "Then");
+        "`then`(function)` should pass over arguments, thisValue and returnValue": function() {
+            // make sure that argument passed to `then` is always called (short-circuit!)
+            // several ways to get to a `then`
+            this.passOverTest(when(yes),                   "then");
+            this.passOverTest(when(yes).and(yes),          "then");
+            this.passOverTest(when(yes).and(yes).and(yes), "then");
         },
 
-        "Then(..) result should be called if and only if condition is true": function() {
+        "function passed to `then` should be called if and only if condition is true": function() {
             var f = this.spy(function(x) { return x; }); // IMPORTANT: fresh function, don't use this.spyId
 
-            If(True).Then(f)();
-            assert(f.calledOnce, "If(True).Then(f)");
+            when(yes).then(f)();
+            assert(f.calledOnce, "when(yes).then(f)");
 
-            If(False).Then(f)();
-            assert(f.calledOnce, "If(False).Then(f)");
+            when(no).then(f)();
+            assert(f.calledOnce, "when(no).then(f)");
 
-            If(True).And(False).Then(f)();
-            assert(f.calledOnce, "If(True).And(False).Then(f)");
+            when(yes).and(no).then(f)();
+            assert(f.calledOnce, "when(yes).and(no).then(f)");
 
-            If(False).And(False).Then(f)();
-            assert(f.calledOnce, "If(False).And(False).Then(f)");
+            when(no).and(no).then(f)();
+            assert(f.calledOnce, "when(no).and(no).then(f)");
 
-            If(True).And(True).Then(f)();
-            assert(f.calledTwice, "If(True).And(True).Then(f)");
+            when(yes).and(yes).then(f)();
+            assert(f.calledTwice, "when(yes).and(yes).then(f)");
 
-            If(False).And(True).Then(f)();
-            assert(f.calledTwice, "If(True).And(True).Then(f)");
+            when(no).and(yes).then(f)();
+            assert(f.calledTwice, "when(yes).and(yes).then(f)");
         },
 
-        "`If(..).Then` properties": function() {
-            var f = If(True).Then;
+        "`when(..).then` properties": function() {
+            var f = when(yes).then;
             var props = "[" + Object.keys(f).sort().join(",") + "]";
             assert.equals(props, "[]");
         },
 
-        "`If(..).Then(function)` properties": function() {
-            var f = If(True).Then(this.spyId);
+        "`when(..).then(function)` properties": function() {
+            var f = when(yes).then(this.spyId);
             var props = "[" + Object.keys(f).sort().join(",") + "]";
-            assert.equals(props, "[]"); // "[Else,ElseIf"]  //  
+            assert.equals(props, "[]"); // "[otherwise,unless"]  //  
         },
     },
 
