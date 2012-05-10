@@ -25,7 +25,6 @@ var projects = [
         // Note that we do NOT entirely skip the installation of jsdom (because installNpmDummy returns false).
         ,skipDep: when(onWindows).and(itMatches, "jsdom").then(installNpmDummy, "contextify@0.1.1")
     },
-    { name: "sinon", gitUrl: "https://github.com/cjohansen/Sinon.JS.git" },
     "buster-docs",
     "buster-util",
     "buster-user-agent-parser",
