@@ -13,5 +13,8 @@
     }],
     "bin": {
         "buster-dev-tools": "./bin/buster-dev-tools"
+    },
+    "scripts": {
+        "test": "./run-tests"
     }
 }
