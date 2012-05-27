@@ -38,7 +38,7 @@ var projects = [
     "buster-test",
     "buster-autotest",
     "fs-watch-tree",
-    "sinon-buster",
+    "buster-sinon",
     "buster-glob",
     "buster-resources",
     "buster-capture-server",
