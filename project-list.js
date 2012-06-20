@@ -45,7 +45,7 @@ var projects = [
     "buster-configuration",
     "buster-client",
     "posix-argv-parser",
-    "buster-stdio-logger",
+    "stream-logger",
     "buster-cli",
     "prefsink",
     "buster-test-cli",
