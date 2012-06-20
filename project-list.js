@@ -40,7 +40,7 @@ var projects = [
     "fs-watch-tree",
     "buster-sinon",
     "buster-glob",
-    "buster-resources",
+    "ramp-resources",
     "buster-capture-server",
     "buster-configuration",
     "buster-client",
