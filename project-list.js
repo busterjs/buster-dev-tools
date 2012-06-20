@@ -16,9 +16,6 @@ var projects = [
     { name: "buster-jstestdriver"
      ,skip: no // to illustrate: 'skip: no' means 'do NOT skip this' (default). 'skip: yes' would skip the entire project, 
      },        // just as 'skip: when(onWindows)' would but only on Windows
-    { name: "buster-bayeux-emitter"
-        ,skipDep: when(onWindows).and(itMatches, "faye", "foobar") // skip npm install of dependency faye (and possibly foobar) on Windows
-    },
     { name: "buster-html-doc"
         // Here's a more complex workaround: on Windows, jsdom fails because npm can't install it's dependency contextify
         // So what we do is put in a dummy contextify s.t. npm will not try to install it
