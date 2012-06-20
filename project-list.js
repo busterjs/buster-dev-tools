@@ -42,6 +42,7 @@ var projects = [
     "buster-glob",
     "ramp-resources",
     "buster-capture-server",
+    "buster-server-cli",
     "buster-configuration",
     "buster-client",
     "posix-argv-parser",
