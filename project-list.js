@@ -13,14 +13,24 @@ function defaultGitUrl(projectName) {
 }
 
 var projects = [
-    { name: "buster-jstestdriver"
-     ,skip: no // to illustrate: 'skip: no' means 'do NOT skip this' (default). 'skip: yes' would skip the entire project, 
-     },        // just as 'skip: when(onWindows)' would but only on Windows
-    { name: "buster-html-doc"
-        // Here's a more complex workaround: on Windows, jsdom fails because npm can't install it's dependency contextify
-        // So what we do is put in a dummy contextify s.t. npm will not try to install it
-        // Note that we do NOT entirely skip the installation of jsdom (because installNpmDummy returns false).
-        ,skipDep: when(onWindows).and(itMatches, "jsdom").then(installNpmDummy, "contextify@0.1.1")
+    {
+        name: "buster-jstestdriver",
+
+        // 'skip: no' means 'do NOT skip this' (default).
+        // 'skip: yes' would skip the entire project, 
+        // just as 'skip: when(onWindows)' would but only on Windows
+        skip: no
+    },        
+    {
+        name: "buster-html-doc",
+        // Here's a more complex workaround: on Windows, jsdom fails because npm
+        // can't install it's dependency contextify. So what we do is put in a
+        // dummy contextify s.t. npm will not try to install it. Note that we do
+        // NOT entirely skip the installation of jsdom (because installNpmDummy
+        // returns false).
+        skipDep: when(onWindows).
+            and(itMatches, "jsdom").
+            then(installNpmDummy, "contextify@0.1.1")
     },
     "buster-docs",
     "buster-util",
@@ -29,9 +39,9 @@ var projects = [
     "buster-analyzer",
     "buster-syntax",
     "buster-core",
-    "referee",
+    "buster-assertions",
     "buster-format",
-    "evented-logger",
+    "buster-evented-logger",
     "buster-test",
     "buster-autotest",
     "fs-watch-tree",
@@ -52,7 +62,9 @@ var projects = [
 ];
 
 // Pull in additional projects listed in ./local, same format as above.
-try { projects = require("./local").concat(projects) } catch(e){};
+try {
+    projects = require("./local").concat(projects);
+} catch(e){};
 
 // Default values defined here:
 function initProject(project) {
@@ -60,9 +72,11 @@ function initProject(project) {
         project = { name: project };
     }
     project.localPath = path.join(devDir, project.name);
-    project.gitUrl    = project.gitUrl || defaultGitUrl(project.name);
-    project.skip      = project.skip || no; // do not skip entire projects by default
-    project.skipDep   = project.skipDep || when(isOptionalDep); // npm install regular and dev deps but no optional deps by default
+    project.gitUrl = project.gitUrl || defaultGitUrl(project.name);
+    // do not skip entire projects by default
+    project.skip = project.skip || no;
+    // npm install regular and dev deps but no optional deps by default
+    project.skipDep = project.skipDep || when(isOptionalDep);
     return project;
 }
 
