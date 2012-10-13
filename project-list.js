@@ -32,7 +32,6 @@ var projects = [
             and(itMatches, "jsdom").
             then(installNpmDummy, "contextify@0.1.1")
     },
-    "buster-docs",
     "buster-util",
     "buster-user-agent-parser",
     "buster-terminal",
