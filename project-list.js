@@ -54,7 +54,7 @@ var projects = [
     "multi-glob",
     "posix-argv-parser",
     "prefsink",
-    "ramp-capture-server",
+    "ramp",
     "ramp-resources",
     "referee",
     "referee-sinon",
