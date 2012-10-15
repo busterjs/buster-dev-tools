@@ -39,6 +39,7 @@ var projects = [
     "buster-autotest",
     "buster-cli",
     "buster-configuration",
+    "buster-core",
     "buster-dev-tools",
     "buster-lint",
     "buster-node",
