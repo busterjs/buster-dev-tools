@@ -13,14 +13,15 @@ function defaultGitUrl(projectName) {
 }
 
 var projects = [
-    {
-        name: "buster-jstestdriver",
+    // Temporarily disabled - not ready for 0.7 yet
+    // {
+    //     name: "buster-jstestdriver",
 
-        // 'skip: no' means 'do NOT skip this' (default).
-        // 'skip: yes' would skip the entire project, 
-        // just as 'skip: when(onWindows)' would but only on Windows
-        skip: no
-    },        
+    //     // 'skip: no' means 'do NOT skip this' (default).
+    //     // 'skip: yes' would skip the entire project, 
+    //     // just as 'skip: when(onWindows)' would but only on Windows
+    //     skip: no
+    // },        
     {
         name: "buster-html-doc",
         // Here's a more complex workaround: on Windows, jsdom fails because npm
@@ -32,32 +33,34 @@ var projects = [
             and(itMatches, "jsdom").
             then(installNpmDummy, "contextify@0.1.1")
     },
-    "buster-docs",
-    "buster-util",
-    "buster-user-agent-parser",
-    "buster-terminal",
+    "ansi-colorizer",
+    "bane",
     "buster-analyzer",
-    "buster-syntax",
-    "buster-core",
-    "buster-assertions",
-    "buster-format",
-    "buster-evented-logger",
-    "buster-test",
     "buster-autotest",
-    "fs-watch-tree",
-    "buster-sinon",
-    "buster-glob",
-    "ramp-resources",
     "buster-capture-server",
-    "buster-server-cli",
-    "buster-configuration",
-    "posix-argv-parser",
-    "stream-logger",
     "buster-cli",
-    "prefsink",
+    "buster-configuration",
+    "buster-dev-tools",
+    "buster-lint",
+    "buster-node",
+    "buster-server-cli",
+    "buster-sinon",
+    "buster-syntax",
+    "buster-test",
     "buster-test-cli",
-    "buster-static",
-    "buster",
+    "dep-tree.org",
+    "evented-logger",
+    "formatio",
+    "fs-watch-tree",
+    "multi-glob",
+    "posix-argv-parser",
+    "prefsink",
+    "ramp-resources",
+    "referee",
+    "referee-sinon",
+    "samsam",
+    "stack-filter",
+    "stream-logger",
     "buster-dev-tools"
 ];
 
