@@ -48,7 +48,6 @@ var projects = [
     "buster-syntax",
     "buster-test",
     "buster-test-cli",
-    "dep-tree.org",
     "evented-logger",
     "formatio",
     "fs-watch-tree",
