@@ -16,5 +16,8 @@
     },
     "scripts": {
         "test": "./run-tests"
+    },
+    "dependencies": {
+        "when": "1.5.1"
     }
 }
