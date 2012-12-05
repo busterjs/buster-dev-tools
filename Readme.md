@@ -4,4 +4,4 @@
 
 Useful tools for Buster.JS developers.
 
-Usage: http://busterjs.org/docs/developers/
+Usage: http://docs.busterjs.org/en/latest/developers/environment/
