@@ -1,4 +1,4 @@
-var testCase = require("buster").testCase;
+var buster = require("buster-node");
 var assert = buster.assert;
 var refute = buster.refute;
 
@@ -14,7 +14,7 @@ var quote               = du.quote,
     installNpmDummy     = du.installNpmDummy
 ;
 
-testCase("dev-utils", {
+buster.testCase("dev-utils", {
 
 
     "onWindows, onMacOS, onLinux - there must be exactly one!": function() {
@@ -204,7 +204,7 @@ testCase("dev-utils", {
             installNpmDummy.call(this.projectDummy, this.existingSubDep, this.dep);
             assert(fileExists(this.existingPackageFile), this.existingPackageFile + " should exist");
 
-            var contents = fs.readFileSync(this.existingPackageFile);
+            var contents = fs.readFileSync(this.existingPackageFile, "utf8");
             assert.equals(contents, this.existingPackageFileContents, "contents of existent file");
 
         },
