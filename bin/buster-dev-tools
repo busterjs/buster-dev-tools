@@ -1,32 +1,53 @@
 #!/usr/bin/env node
-var dt = require("../lib/buster-dev-tools");
-var projects = require("../project-list");
 
-function error() {
-    process.stderr.write("Unrecognized option(s) encountered. See --help.\n");
-    process.exit(1);
+// Before we do our actual work (function go() below), we make sure
+// that dependencies of buster-dev-tools itself are there:
+
+var path = require("path");
+var cp = require("child_process");
+var devToolsPath = path.resolve(__dirname, ".."); // we're in bin/ so node_modules/ is/goes one up
+
+cp.exec("npm install", { cwd: devToolsPath }, function (err, stdout, stderr) {
+    if (err) {
+        console.log("Error occurred when running cmd for " + project.name);
+        console.log("Command: ", cmd);
+        console.log("Opts: ", opts);
+        console.log("Throwing error as exception.");
+        throw err;
+    }
+    go();
+});
+
+function go() {
+    var dt = require("../lib/buster-dev-tools");
+    var projects = require("../project-list");
+
+    function error() {
+        process.stderr.write("Unrecognized option(s) encountered. See --help.\n");
+        process.exit(1);
+    }
+
+    var args = process.argv.slice(2);
+    if (args.length !== 1) return error();
+    var arg = args[0];
+
+    if (arg == "-h" || args == "--help") {
+        console.log("buster-dev-tools");
+        console.log();
+        console.log("     pull   Clone and/or pull all the repos.");
+        console.log("     deps   Reinstalls all non-buster deps.");
+        return;
+    }
+
+    if (arg == "pull") {
+        dt.doOperations(projects, [dt.pull, dt.submodules, dt.installDeps]);
+        return;
+    } 
+
+    if (arg == "deps") {
+        dt.doOperations(projects, [dt.installDeps]);
+        return;
+    }
+
+    error();
 }
-
-var args = process.argv.slice(2);
-if (args.length !== 1) return error();
-var arg = args[0];
-
-if (arg == "-h" || args == "--help") {
-    console.log("buster-dev-tools");
-    console.log();
-    console.log("     pull   Clone and/or pull all the repos.");
-    console.log("     deps   Reinstalls all non-buster deps.");
-    return;
-}
-
-if (arg == "pull") {
-    dt.doOperations(projects, [dt.pull, dt.submodules, dt.installDeps]);
-    return;
-}
-
-if (arg == "deps") {
-    dt.doOperations(projects, [dt.installDeps]);
-    return;
-}
-
-error();
