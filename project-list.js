@@ -34,7 +34,6 @@ var projects = [
             then(installNpmDummy, "contextify@0.1.1")
     },
     "ansi-colorizer",
-    "ansi-grid",
     "bane",
     "buster-analyzer",
     "buster-autotest",

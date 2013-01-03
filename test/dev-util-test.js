@@ -1,4 +1,4 @@
-var testCase = require("buster").testCase;
+var buster = require("buster-node");
 var assert = buster.assert;
 var refute = buster.refute;
 
@@ -14,7 +14,7 @@ var quote               = du.quote,
     installNpmDummy     = du.installNpmDummy
 ;
 
-testCase("dev-utils", {
+buster.testCase("dev-utils", {
 
 
     "onWindows, onMacOS, onLinux - there must be exactly one!": function() {
