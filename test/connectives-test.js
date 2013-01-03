@@ -1,4 +1,4 @@
-var testCase = require("buster").testCase;
+var buster = require("buster-node");
 var assert = buster.assert;
 var refute = buster.refute;
 
@@ -7,7 +7,7 @@ var yes  = cn.yes,
     no   = cn.no, 
     when = cn.when;
 
-testCase("Connectives", {
+buster.testCase("Connectives", {
     setUp: function() {
         this.spyId = this.spy(function(x) { return x; });
         var obj = {};

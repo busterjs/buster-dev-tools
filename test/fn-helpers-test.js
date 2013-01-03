@@ -1,11 +1,11 @@
-var testCase = require("buster").testCase;
+var buster = require("buster-node");
 var assert = buster.assert;
 var refute = buster.refute;
 
 var fh = require("../lib/fn-helpers");
 var partialApply = fh.partialApply;
 
-testCase("fn-helpers", {
+buster.testCase("fn-helpers", {
 
     "partialApply": {
 
