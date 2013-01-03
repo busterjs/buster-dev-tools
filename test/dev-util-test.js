@@ -204,7 +204,7 @@ buster.testCase("dev-utils", {
             installNpmDummy.call(this.projectDummy, this.existingSubDep, this.dep);
             assert(fileExists(this.existingPackageFile), this.existingPackageFile + " should exist");
 
-            var contents = fs.readFileSync(this.existingPackageFile);
+            var contents = fs.readFileSync(this.existingPackageFile, "utf8");
             assert.equals(contents, this.existingPackageFileContents, "contents of existent file");
 
         },
