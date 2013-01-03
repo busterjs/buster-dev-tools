@@ -61,8 +61,7 @@ var projects = [
     "referee-sinon",
     "samsam",
     "stack-filter",
-    "stream-logger",
-    "buster-dev-tools"
+    "stream-logger"
 ];
 
 // Pull in additional projects listed in ./local.js, same format as above.
