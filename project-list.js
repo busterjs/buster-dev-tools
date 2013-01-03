@@ -6,7 +6,8 @@ var yes = cn.yes, no = cn.no, when = cn.when;
     isOptionalDep   = du.isOptionalDep,
     itMatches       = du.itMatches,
     installNpmDummy = du.installNpmDummy,
-    devDir          = du.devDir;
+    devDir          = du.devDir,
+    fileExists      = du.fileExists;
 
 function defaultGitUrl(projectName) {
     return "https://github.com/busterjs/" + projectName + ".git";
@@ -65,10 +66,11 @@ var projects = [
     "buster-dev-tools"
 ];
 
-// Pull in additional projects listed in ./local, same format as above.
-try {
-    projects = require("./local").concat(projects);
-} catch(e){};
+// Pull in additional projects listed in ./local.js, same format as above.
+var localList = "./local.js";
+if (fileExists(localList)) {
+    projects = require(localList).concat(projects);
+}
 
 // Default values defined here:
 function initProject(project) {
