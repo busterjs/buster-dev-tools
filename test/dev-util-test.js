@@ -11,7 +11,8 @@ var quote               = du.quote,
     fileExists          = du.fileExists,
     itMatches           = du.itMatches,
     isOptionalDep       = du.isOptionalDep,
-    installNpmDummy     = du.installNpmDummy
+    installNpmDummy     = du.installNpmDummy,
+    runCmd              = du.runCmd
 ;
 
 buster.testCase("dev-utils", {
@@ -209,6 +210,55 @@ buster.testCase("dev-utils", {
 
         },
 
+    },
+    
+    
+    "runCmd": {
+    
+        setUp: function() {
+            this.fixturesPath = path.join(__dirname, "fixtures");
+            this.testDirName = "someDir";
+            this.testDirPath = path.join(this.fixturesPath, this.testDirName);
+            this.purgeFixtures = function() {
+                if (directoryExists(this.testDirPath)) {
+                    fs.rmdirSync(this.testDirPath);
+                }
+            };
+            // make sure folder fixtures exists
+            if (!directoryExists(this.fixturesPath)) {
+                fs.mkdirSync(this.fixturesPath);
+            }
+            // start from clean
+            this.purgeFixtures();
+        },
+        
+        tearDown: function() {
+            this.purgeFixtures();
+        },
+        
+        "does in fact run command in given cwd": function(testDone) {
+            var c = "mkdir \"" + this.testDirName + "\""; // IMPORTANT: command must be valid on both, Windows and Unixes
+            var p = { name: "dummyProject" };
+            var o = { cwd: this.fixturesPath };
+            var d = this.testDirPath; // Attention: do NOT use "this" in the callback, it's something else than here!
+            
+            runCmd(c, p, o, function() {
+                assert(directoryExists(d), "cmd: '" + c + "' ~> folder " + d + " should have been created");
+                testDone();
+            });
+        },
+        
+        "calls callback when done": function(testDone) {
+            var c = "echosfg foo"; // IMPORTANT: command must be valid on both, Windows and Unixes
+            var p = { name: "dummyProject" };
+            var o = { cwd: null };
+            
+            runCmd(c, p, o, function() {
+                assert(true);
+                testDone();
+            });
+        },
+        
     },
 
 });
