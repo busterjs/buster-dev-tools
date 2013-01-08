@@ -246,10 +246,40 @@ buster.testCase("dev-utils", {
             }
             // start from clean
             this.purgeFixtures();
+            
+            this.testWorkingDir = function(testDone, expectedDir, project, opts) {
+                // IMPORTANT: command must be valid on both, Windows and Unixes
+                var cmd = "echo %CD%`pwd`"; // trick is: %CD% works in Win Dosbox while `pwd` works on Unix and in Win Git Bash
+                var cb = function(stdout, stderr) {
+                    var out = stdout.toString().replace(/\r|\n/g,""); // cut off newline sequences
+                    var dir = out.match(/^%CD%.+/) ? out.substr(4) : out.substr(0, out.length-5);
+                    // let's use path.relative so we're not platform dependent:
+                    assert.equals(path.relative(expectedDir, dir), "", 'relative path from "' + expectedDir + '" to "' + dir + '"');
+                    testDone();
+                };
+                if (arguments.length == 4) {
+                    runCmd(cmd, project, opts, cb);
+                } else {
+                    runCmd(cmd, project, cb);
+                }
+            };
         },
         
         tearDown: function() {
             this.purgeFixtures();
+        },
+        
+        "calls callback with stdout and stderr when done": function(testDone) {
+            var s = "foo";
+            var c = "echo " + s; // IMPORTANT: command must be valid on both, Windows and Unixes
+            var p = { name: "dummyProject" };
+            var o = { cwd: null };
+
+            runCmd(c, p, o, function(stdout, stderr) {
+                assert.equals(stdout.toString().replace(/\r|\n/g,""), s); // up to newline sequences
+                assert.equals(stderr.toString().replace(/\r|\n/g,""), ""); // up to newline sequences
+                testDone();
+            });
         },
 
         "does in fact run command in given cwd": function(testDone) {
@@ -264,47 +294,86 @@ buster.testCase("dev-utils", {
             });
         },
         
-        "calls callback with stdout and stderr when done": function(testDone) {
-            var s = "foo";
-            var c = "echo " + s; // IMPORTANT: command must be valid on both, Windows and Unixes
-            var p = { name: "dummyProject" };
-            var o = { cwd: null };
+        "executes in": {
+            "given opts.cwd": { // should always execute there, the ifs below are just some cases
+                "if project.localPath is missing": function(testDone) {
+                    var p = { name: "dummyProject" };
+                    var o = { cwd: this.fixturesPath };
+                    this.testWorkingDir(testDone, o.cwd, p, o);
+                },
             
-            runCmd(c, p, o, function(stdout, stderr) {
-                assert.equals(stdout.toString().replace(/\r|\n/g,""), s); // up to newline sequences
-                assert.equals(stderr.toString().replace(/\r|\n/g,""), ""); // up to newline sequences
-                testDone();
-            });
-        },
+                "even if project.localPath exists": function(testDone) {
+                    var p = { name: "dummyProject", localPath: devDir };
+                    var o = { cwd: this.fixturesPath };
+                    this.testWorkingDir(testDone, o.cwd, p, o);
+                },
+            
+                "even if project.localPath does not exist": function(testDone) {
+                    var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
+                    var o = { cwd: this.fixturesPath };
+                    this.testWorkingDir(testDone, o.cwd, p, o);
+                },
+            
+            },
+            
+            "devDir": {
+                "if project.localPath doesn't exist and arg opts": {
+                    "is omitted": function(testDone) {
+                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
+                        this.testWorkingDir(testDone, devDir, p);
+                    },
+                
+                    "is null": function(testDone) {
+                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
+                        this.testWorkingDir(testDone, devDir, p, null);
+                    },
+                    
+                    "is undefined": function(testDone) {
+                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
+                        this.testWorkingDir(testDone, devDir, p, undefined);
+                    },
+                    
+                    "doesn't have property cwd": function(testDone) {
+                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
+                        this.testWorkingDir(testDone, devDir, p, {});
+                    },
+                    
+                    "has property cwd = null": function(testDone) {
+                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
+                        this.testWorkingDir(testDone, devDir, p, { cwd: null });
+                    },
+                },
+            },
         
-        "executes in devDir if arg opts is omitted and project.localPath doesn't exist": function(testDone) {
-            // IMPORTANT: command must be valid on both, Windows and Unixes
-            var c = "echo %CD%`pwd`"; // trick is: %CD% works in Win Dosbox while `pwd` works on Unix and in Win Git Bash
-            var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
-            var expectedDir = devDir;
-            
-            runCmd(c, p, function(stdout, stderr) {
-                var out = stdout.toString().replace(/\r|\n/g,""); // cut off newline sequences
-                var dir = out.match(/^%CD%.+/) ? out.substr(4) : out.substr(0, out.length-5);
-                // let's use path.relative so we're not platform dependent:
-                assert.equals(path.relative(expectedDir, dir), "", 'relative path from "' + expectedDir + '" to "' + dir + '"');
-                testDone();
-            });
-        },
-        
-        "executes in project.localPath if arg opts is omitted and project.localPath does exist": function(testDone) {
-            // IMPORTANT: command must be valid on both, Windows and Unixes
-            var c = "echo %CD%`pwd`"; // trick is: %CD% works in Win Dosbox while `pwd` works on Unix and in Win Git Bash
-            var p = { name: "dummyProject", localPath: this.fixturesPath };
-            var expectedDir = p.localPath;
-            
-            runCmd(c, p, function(stdout, stderr) {
-                var out = stdout.toString().replace(/\r|\n/g,""); // cut off newline sequences
-                var dir = out.match(/^%CD%.+/) ? out.substr(4) : out.substr(0, out.length-5);
-                // let's use path.relative so we're not platform dependent:
-                assert.equals(path.relative(expectedDir, dir), "", 'relative path from "' + expectedDir + '" to "' + dir + '"');
-                testDone();
-            });
+            "project.localPath": {
+                "if project.localPath exists and arg opts": {
+                    "is omitted": function(testDone) {
+                        var p = { name: "dummyProject", localPath: this.fixturesPath };
+                        this.testWorkingDir(testDone, p.localPath, p);
+                    },
+                    
+                    "is null": function(testDone) {
+                        var p = { name: "dummyProject", localPath: this.fixturesPath };
+                        this.testWorkingDir(testDone, p.localPath, p, null);
+                    },
+                    
+                    "is undefined": function(testDone) {
+                        var p = { name: "dummyProject", localPath: this.fixturesPath };
+                        this.testWorkingDir(testDone, p.localPath, p, undefined);
+                    },
+                    
+                    "doesn't have property cwd": function(testDone) {
+                        var p = { name: "dummyProject", localPath: this.fixturesPath };
+                        this.testWorkingDir(testDone, p.localPath, p, {});
+                    },
+                    
+                    "has property cwd = null": function(testDone) {
+                        var p = { name: "dummyProject", localPath: this.fixturesPath };
+                        this.testWorkingDir(testDone, p.localPath, p, { cwd: null });
+                    },
+                    
+                },
+            },
         },
 
         // domains is a new feature in node v0.8, CAUTION: buster currently is not working reliably with it
