@@ -247,8 +247,10 @@ buster.testCase("dev-utils", {
             }
             // start from clean
             this.purgeFixtures();
-            
-            this.testWorkingDir = function(testDone, expectedDir, project, opts) {
+
+            this.testWorkingDir = function(testDone, opts) {
+                var expectedDir = this.expectedDir; // cannot use "this" in callback
+                var project = this.project;
                 // IMPORTANT: command must be valid on both, Windows and Unixes
                 var cmd = "echo %CD%`pwd`"; // trick is: %CD% works in Win Dosbox while `pwd` works on Unix and in Win Git Bash
                 var cb = function(stdout, stderr) {
@@ -258,7 +260,7 @@ buster.testCase("dev-utils", {
                     assert.equals(path.relative(expectedDir, dir), "", 'relative path from "' + expectedDir + '" to "' + dir + '"');
                     testDone();
                 };
-                if (arguments.length == 4) {
+                if (arguments.length == 2) {
                     runCmd(cmd, project, opts, cb);
                 } else {
                     runCmd(cmd, project, cb);
@@ -291,18 +293,18 @@ buster.testCase("dev-utils", {
                 },
                 
                 "if project.localPath is missing": function(testDone) {
-                    var p = { name: "dummyProject" };
-                    this.testWorkingDir(testDone, this.expectedDir, p, this.opts);
+                    this.project = { name: "dummyProject" };
+                    this.testWorkingDir(testDone, this.opts);
                 },
             
                 "even if project.localPath exists": function(testDone) {
-                    var p = { name: "dummyProject", localPath: this.existentPath };
-                    this.testWorkingDir(testDone, this.expectedDir, p, this.opts);
+                    this.project = { name: "dummyProject", localPath: devDir }; // let's use something other than project.localPath
+                    this.testWorkingDir(testDone, this.opts);
                 },
             
                 "even if project.localPath does not exist": function(testDone) {
-                    var p = { name: "dummyProject", localPath: this.nonExistentPath };
-                    this.testWorkingDir(testDone, this.expectedDir, p, this.opts);
+                    this.project = { name: "dummyProject", localPath: this.nonExistentPath };
+                    this.testWorkingDir(testDone, this.opts);
                 },
             
             },
@@ -315,23 +317,27 @@ buster.testCase("dev-utils", {
                     },
                     
                     "is omitted": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project);
+                        this.testWorkingDir(testDone);
                     },
                 
                     "is null": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project, null);
+                        this.testWorkingDir(testDone, null);
                     },
                     
                     "is undefined": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project, undefined);
+                        this.testWorkingDir(testDone, undefined);
                     },
                     
                     "doesn't have property cwd": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project, {});
+                        this.testWorkingDir(testDone, {});
                     },
                     
                     "has property cwd = null": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project, { cwd: null });
+                        this.testWorkingDir(testDone, { cwd: null });
+                    },
+                    
+                    "has property cwd = undefined": function(testDone) {
+                        this.testWorkingDir(testDone, { cwd: undefined });
                     },
                 },
             },
@@ -344,23 +350,27 @@ buster.testCase("dev-utils", {
                     },
                     
                     "is omitted": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project);
+                        this.testWorkingDir(testDone);
                     },
                     
                     "is null": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project, null);
+                        this.testWorkingDir(testDone, null);
                     },
                     
                     "is undefined": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project, undefined);
+                        this.testWorkingDir(testDone, undefined);
                     },
                     
                     "doesn't have property cwd": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project, {});
+                        this.testWorkingDir(testDone, {});
                     },
                     
                     "has property cwd = null": function(testDone) {
-                        this.testWorkingDir(testDone, this.expectedDir, this.project, { cwd: null });
+                        this.testWorkingDir(testDone, { cwd: null });
+                    },
+                    
+                    "has property cwd = undefined": function(testDone) {
+                        this.testWorkingDir(testDone, { cwd: undefined });
                     },
                     
                 },
