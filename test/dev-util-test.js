@@ -13,6 +13,7 @@ var quote               = du.quote,
     itMatches           = du.itMatches,
     isOptionalDep       = du.isOptionalDep,
     installNpmDummy     = du.installNpmDummy,
+    devDir              = du.devDir,
     runCmd              = du.runCmd
 ;
 
@@ -70,6 +71,22 @@ buster.testCase("dev-utils", {
             refute(fileExists(path.join(__dirname, "i", "should", "not", "exist")));
         },
 
+    },
+
+    "devDir": {
+    
+        "is non-empty": function() {
+            refute.equals(devDir, "");
+        },
+    
+        "exists": function() {
+            assert(directoryExists(devDir), '"' + devDir + '" should exist');
+        },
+        
+        "is an absolute path": function() {
+            assert.equals(path.resolve("/foo", devDir), devDir);
+        },
+        
     },
 
     "itMatches": {
@@ -247,13 +264,45 @@ buster.testCase("dev-utils", {
             });
         },
         
-        "calls callback when done": function(testDone) {
-            var c = "echo foo"; // IMPORTANT: command must be valid on both, Windows and Unixes
+        "calls callback with stdout and stderr when done": function(testDone) {
+            var s = "foo";
+            var c = "echo " + s; // IMPORTANT: command must be valid on both, Windows and Unixes
             var p = { name: "dummyProject" };
             var o = { cwd: null };
             
-            runCmd(c, p, o, function() {
-                assert(true);
+            runCmd(c, p, o, function(stdout, stderr) {
+                assert.equals(stdout.toString().replace(/\r|\n/g,""), s); // up to newline sequences
+                assert.equals(stderr.toString().replace(/\r|\n/g,""), ""); // up to newline sequences
+                testDone();
+            });
+        },
+        
+        "executes in devDir if arg opts is omitted and project.localPath doesn't exist": function(testDone) {
+            // IMPORTANT: command must be valid on both, Windows and Unixes
+            var c = "echo %CD%`pwd`"; // trick is: %CD% works in Win Dosbox while `pwd` works on Unix and in Win Git Bash
+            var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
+            var expectedDir = devDir;
+            
+            runCmd(c, p, function(stdout, stderr) {
+                var out = stdout.toString().replace(/\r|\n/g,""); // cut off newline sequences
+                var dir = out.match(/^%CD%.+/) ? out.substr(4) : out.substr(0, out.length-5);
+                // let's use path.relative so we're not platform dependent:
+                assert.equals(path.relative(expectedDir, dir), "", 'relative path from "' + expectedDir + '" to "' + dir + '"');
+                testDone();
+            });
+        },
+        
+        "executes in project.localPath if arg opts is omitted and project.localPath does exist": function(testDone) {
+            // IMPORTANT: command must be valid on both, Windows and Unixes
+            var c = "echo %CD%`pwd`"; // trick is: %CD% works in Win Dosbox while `pwd` works on Unix and in Win Git Bash
+            var p = { name: "dummyProject", localPath: this.fixturesPath };
+            var expectedDir = p.localPath;
+            
+            runCmd(c, p, function(stdout, stderr) {
+                var out = stdout.toString().replace(/\r|\n/g,""); // cut off newline sequences
+                var dir = out.match(/^%CD%.+/) ? out.substr(4) : out.substr(0, out.length-5);
+                // let's use path.relative so we're not platform dependent:
+                assert.equals(path.relative(expectedDir, dir), "", 'relative path from "' + expectedDir + '" to "' + dir + '"');
                 testDone();
             });
         },
