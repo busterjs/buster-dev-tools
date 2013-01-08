@@ -233,11 +233,12 @@ buster.testCase("dev-utils", {
     
         setUp: function() {
             this.fixturesPath = path.join(__dirname, "fixtures");
-            this.testDirName = "someDir";
-            this.testDirPath = path.join(this.fixturesPath, this.testDirName);
+            this.existentPath = this.fixturesPath;
+            var nonXdirDirName = "i-should-not-be-there";
+            this.nonExistentPath = path.join(this.fixturesPath, nonXdirDirName);
             this.purgeFixtures = function() {
-                if (directoryExists(this.testDirPath)) {
-                    fs.rmdirSync(this.testDirPath);
+                if (directoryExists(this.nonExistentPath)) {
+                    fs.rmdirSync(this.nonExistentPath);
                 }
             };
             // make sure folder fixtures exists
@@ -281,95 +282,85 @@ buster.testCase("dev-utils", {
                 testDone();
             });
         },
-
-        "does in fact run command in given cwd": function(testDone) {
-            var c = "mkdir \"" + this.testDirName + "\""; // IMPORTANT: command must be valid on both, Windows and Unixes
-            var p = { name: "dummyProject" };
-            var o = { cwd: this.fixturesPath };
-            var d = this.testDirPath; // Attention: do NOT use "this" in the callback, it's something else than here!
-            
-            runCmd(c, p, o, function() {
-                assert(directoryExists(d), "cmd: '" + c + "' ~> folder " + d + " should have been created");
-                testDone();
-            });
-        },
         
         "executes in": {
             "given opts.cwd": { // should always execute there, the ifs below are just some cases
+                setUp: function() {
+                    this.opts = { cwd: this.existentPath };
+                    this.expectedDir = this.opts.cwd;
+                },
+                
                 "if project.localPath is missing": function(testDone) {
                     var p = { name: "dummyProject" };
-                    var o = { cwd: this.fixturesPath };
-                    this.testWorkingDir(testDone, o.cwd, p, o);
+                    this.testWorkingDir(testDone, this.expectedDir, p, this.opts);
                 },
             
                 "even if project.localPath exists": function(testDone) {
-                    var p = { name: "dummyProject", localPath: devDir };
-                    var o = { cwd: this.fixturesPath };
-                    this.testWorkingDir(testDone, o.cwd, p, o);
+                    var p = { name: "dummyProject", localPath: this.existentPath };
+                    this.testWorkingDir(testDone, this.expectedDir, p, this.opts);
                 },
             
                 "even if project.localPath does not exist": function(testDone) {
-                    var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
-                    var o = { cwd: this.fixturesPath };
-                    this.testWorkingDir(testDone, o.cwd, p, o);
+                    var p = { name: "dummyProject", localPath: this.nonExistentPath };
+                    this.testWorkingDir(testDone, this.expectedDir, p, this.opts);
                 },
             
             },
             
             "devDir": {
                 "if project.localPath doesn't exist and arg opts": {
+                    setUp: function() {
+                        this.project = { name: "dummyProject", localPath: this.nonExistentPath };
+                        this.expectedDir = devDir;
+                    },
+                    
                     "is omitted": function(testDone) {
-                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
-                        this.testWorkingDir(testDone, devDir, p);
+                        this.testWorkingDir(testDone, this.expectedDir, this.project);
                     },
                 
                     "is null": function(testDone) {
-                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
-                        this.testWorkingDir(testDone, devDir, p, null);
+                        this.testWorkingDir(testDone, this.expectedDir, this.project, null);
                     },
                     
                     "is undefined": function(testDone) {
-                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
-                        this.testWorkingDir(testDone, devDir, p, undefined);
+                        this.testWorkingDir(testDone, this.expectedDir, this.project, undefined);
                     },
                     
                     "doesn't have property cwd": function(testDone) {
-                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
-                        this.testWorkingDir(testDone, devDir, p, {});
+                        this.testWorkingDir(testDone, this.expectedDir, this.project, {});
                     },
                     
                     "has property cwd = null": function(testDone) {
-                        var p = { name: "dummyProject", localPath: "qumbl/no-such-folder" };
-                        this.testWorkingDir(testDone, devDir, p, { cwd: null });
+                        this.testWorkingDir(testDone, this.expectedDir, this.project, { cwd: null });
                     },
                 },
             },
         
             "project.localPath": {
                 "if project.localPath exists and arg opts": {
+                    setUp: function() {
+                        this.project = { name: "dummyProject", localPath: this.existentPath };
+                        this.expectedDir = this.project.localPath;
+                    },
+                    
                     "is omitted": function(testDone) {
-                        var p = { name: "dummyProject", localPath: this.fixturesPath };
-                        this.testWorkingDir(testDone, p.localPath, p);
+                        this.testWorkingDir(testDone, this.expectedDir, this.project);
                     },
                     
                     "is null": function(testDone) {
-                        var p = { name: "dummyProject", localPath: this.fixturesPath };
-                        this.testWorkingDir(testDone, p.localPath, p, null);
+                        this.testWorkingDir(testDone, this.expectedDir, this.project, null);
                     },
                     
                     "is undefined": function(testDone) {
-                        var p = { name: "dummyProject", localPath: this.fixturesPath };
-                        this.testWorkingDir(testDone, p.localPath, p, undefined);
+                        this.testWorkingDir(testDone, this.expectedDir, this.project, undefined);
                     },
                     
                     "doesn't have property cwd": function(testDone) {
-                        var p = { name: "dummyProject", localPath: this.fixturesPath };
-                        this.testWorkingDir(testDone, p.localPath, p, {});
+                        this.testWorkingDir(testDone, this.expectedDir, this.project, {});
                     },
                     
                     "has property cwd = null": function(testDone) {
-                        var p = { name: "dummyProject", localPath: this.fixturesPath };
-                        this.testWorkingDir(testDone, p.localPath, p, { cwd: null });
+                        this.testWorkingDir(testDone, this.expectedDir, this.project, { cwd: null });
                     },
                     
                 },
