@@ -2,6 +2,7 @@ var buster = require("buster-node");
 var assert = buster.assert;
 var refute = buster.refute;
 
+//var domain = require("domain");  // domains is a new feature in node v0.8, omit for now
 var fs = require("fs");
 var path = require("path");
 
@@ -16,7 +17,6 @@ var quote               = du.quote,
 ;
 
 buster.testCase("dev-utils", {
-
 
     "onWindows, onMacOS, onLinux - there must be exactly one!": function() {
         var results = [du.onWindows(), du.onMacOS(), du.onLinux()];
@@ -212,7 +212,6 @@ buster.testCase("dev-utils", {
 
     },
     
-    
     "runCmd": {
     
         setUp: function() {
@@ -235,7 +234,7 @@ buster.testCase("dev-utils", {
         tearDown: function() {
             this.purgeFixtures();
         },
-        
+
         "does in fact run command in given cwd": function(testDone) {
             var c = "mkdir \"" + this.testDirName + "\""; // IMPORTANT: command must be valid on both, Windows and Unixes
             var p = { name: "dummyProject" };
@@ -249,7 +248,7 @@ buster.testCase("dev-utils", {
         },
         
         "calls callback when done": function(testDone) {
-            var c = "echosfg foo"; // IMPORTANT: command must be valid on both, Windows and Unixes
+            var c = "echo foo"; // IMPORTANT: command must be valid on both, Windows and Unixes
             var p = { name: "dummyProject" };
             var o = { cwd: null };
             
@@ -258,7 +257,28 @@ buster.testCase("dev-utils", {
                 testDone();
             });
         },
-        
+
+        // domains is a new feature in node v0.8, CAUTION: buster currently is not working reliably with it
+        "//re-throws exception from cmd invocation": function(testDone) {
+            var c = "some-invalid-command";
+            var p = { name: "dummyProject" };
+            var o = { cwd: null };
+            var d = domain.create();
+            d.on("error", function (err) {
+                d.dispose();
+                assert.match(err.message, c);
+                testDone();
+                /*
+                testDone(function () {
+                    assert.match(err.message, c);
+                });
+                */
+            });
+            d.run(function() {
+                runCmd(c, p, o, function() {});
+            });
+        },
+
     },
 
 });
