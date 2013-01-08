@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-var dt = require("../lib/buster-dev-tools");
+var path = require("path");
+
 var projects = require("../project-list");
+var du = require("../lib/dev-util");
 
 function error() {
     process.stderr.write("Unrecognized option(s) encountered. See --help.\n");
@@ -15,16 +17,24 @@ if (arg == "-h" || args == "--help") {
     console.log("buster-dev-tools");
     console.log();
     console.log("     pull   Clone and/or pull all the repos.");
-    console.log("     deps   Reinstalls all non-buster deps.");
+    console.log("     deps   Reinstalls all non-buster deps (assuming you have done 'pull' already.");
     return;
 }
 
+var devToolsProject = { name: "buster-dev-tools" };
+devToolsProject.localPath = path.join(du.devDir, devToolsProject.name);
+
 if (arg == "pull") {
-    dt.doOperations(projects, [dt.pull, dt.submodules, dt.installDeps]);
+    // for now: make sure we have 'when' in buster-dev-tools/node_modules:
+    du.runCmd("npm install", devToolsProject, function() {
+        var dt = require("../lib/buster-dev-tools"); // only then require lib/buster-dev-tools which depends on 'when'
+        dt.doOperations(projects, [dt.pull, dt.submodules, dt.installDeps]);
+    });
     return;
 }
 
 if (arg == "deps") {
+    var dt = require("../lib/buster-dev-tools"); // only now require lib/buster-dev-tools which depends on 'when'
     dt.doOperations(projects, [dt.installDeps]);
     return;
 }
