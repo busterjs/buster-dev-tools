@@ -34,6 +34,8 @@ var projects = [
             and(itMatches, "jsdom").
             then(installNpmDummy, "contextify@0.1.1")
     },
+    // "buster",  // Temporarily disabled - not ready for 0.7 yet
+    "buster-dev-tools",
     "ansi-colorizer",
     "bane",
     "buster-analyzer",
@@ -41,7 +43,6 @@ var projects = [
     "buster-cli",
     "buster-configuration",
     "buster-core",
-    "buster-dev-tools",
     "buster-lint",
     "buster-node",
     "buster-server-cli",
