@@ -18,6 +18,6 @@
         "test": "./run-tests"
     },
     "dependencies": {
-        "when": "1.5.1"
+        "when": "1.8.1"
     }
 }
