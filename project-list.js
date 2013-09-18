@@ -46,6 +46,7 @@ var projects = [
     "buster-node",
     "buster-server-cli",
     "buster-sinon",
+    "buster-static",
     "buster-syntax",
     "buster-test",
     "buster-test-cli",
