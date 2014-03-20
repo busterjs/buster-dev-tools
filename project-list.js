@@ -32,7 +32,7 @@ var projects = [
         // returns false).
         skipDep: when(onWindows).
             and(itMatches, "jsdom").
-            then(installNpmDummy, "contextify@0.1.1")
+            then(installNpmDummy, "contextify@0.1.7")
     },
     "buster",
     "buster-dev-tools",
