@@ -18,6 +18,7 @@ if (arg == "-h" || args == "--help") {
     console.log();
     console.log("     pull   Clone and/or pull all the repos.");
     console.log("     deps   Reinstalls all non-buster deps (assuming you have done 'pull' already.");
+    console.log("     clear  Removes node_modules folder of all projects (except for project buster-dev-tools).");
     return;
 }
 
@@ -30,6 +31,12 @@ if (arg == "pull") {
         var dt = require("../lib/buster-dev-tools"); // only then require lib/buster-dev-tools which depends on 'when'
         dt.doOperations(projects, [dt.pull, dt.submodules, dt.installDeps]);
     });
+    return;
+}
+
+if (arg == "clear") {
+    var dt = require("../lib/buster-dev-tools"); // only now require lib/buster-dev-tools which depends on 'when'
+    dt.doOperations(projects, [dt.clearAllDeps]);
     return;
 }
 
