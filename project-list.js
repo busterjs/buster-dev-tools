@@ -24,15 +24,15 @@ var projects = [
     //     skip: no
     // },        
     {
-        name: "buster-html-doc",
+        name: "buster-html-doc"//,
         // Here's a more complex workaround: on Windows, jsdom fails because npm
         // can't install it's dependency contextify. So what we do is put in a
         // dummy contextify s.t. npm will not try to install it. Note that we do
         // NOT entirely skip the installation of jsdom (because installNpmDummy
         // returns false).
-        skipDep: when(onWindows).
-            and(itMatches, "jsdom").
-            then(installNpmDummy, "contextify@0.1.7")
+        //skipDep: when(onWindows).
+        //    and(itMatches, "jsdom").
+        //    then(installNpmDummy, "contextify@0.1.7")
     },
     "buster",
     "buster-dev-tools",

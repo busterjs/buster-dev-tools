@@ -16,16 +16,19 @@ var arg = args[0];
 if (arg == "-h" || args == "--help") {
     console.log("buster-dev-tools");
     console.log();
-    console.log("     pull   Clone and/or pull all the repos.");
-    console.log("     deps   Reinstalls all non-buster deps (assuming you have done 'pull' already.");
-    console.log("     clear  Removes node_modules folder of all projects (except for project buster-dev-tools).");
+    console.log("     pull    Clone and/or pull all the repos.");
+    console.log("     deps    Reinstalls all non-buster deps (assuming you have done 'pull' already.");
+    console.log("     clear   Removes node_modules folder of all projects (except for project buster-dev-tools).");
+    console.log("     test    Calls 'npm install && npm test' for all projects."); 
+    console.log("     changed Checks for not released changes for all projects.");
+    console.log("     pr      Determines the number of open pull requests for all projects.");
     return;
 }
 
 var devToolsProject = { name: "buster-dev-tools" };
 devToolsProject.localPath = path.join(du.devDir, devToolsProject.name);
 
-if (arg == "pull") {
+if (arg === "pull") {
     // for now: make sure we have 'when' in buster-dev-tools/node_modules:
     du.runCmd("npm install", devToolsProject, function() {
         var dt = require("../lib/buster-dev-tools"); // only then require lib/buster-dev-tools which depends on 'when'
@@ -34,16 +37,35 @@ if (arg == "pull") {
     return;
 }
 
-if (arg == "clear") {
+if (arg === "clear") {
     var dt = require("../lib/buster-dev-tools"); // only now require lib/buster-dev-tools which depends on 'when'
     dt.doOperations(projects, [dt.clearAllDeps]);
     return;
 }
 
-if (arg == "deps") {
+if (arg === "deps") {
     var dt = require("../lib/buster-dev-tools"); // only now require lib/buster-dev-tools which depends on 'when'
     dt.doOperations(projects, [dt.installDeps]);
     return;
 }
+
+if (arg === "test") {
+    var dt = require("../lib/buster-dev-tools"); // only now require lib/buster-dev-tools which depends on 'when'
+    dt.doOperations(projects, [dt.npmTest]);
+    return;
+}
+
+if (arg === "changed") {
+    var dt = require("../lib/buster-dev-tools"); // only now require lib/buster-dev-tools which depends on 'when'
+    dt.doOperations(projects, [dt.changed]);
+    return;
+}
+
+if (arg === "pr") {
+    var dt = require("../lib/buster-dev-tools"); // only now require lib/buster-dev-tools which depends on 'when'
+    dt.doOperations(projects, [dt.pullRequests]);
+    return;
+}
+
 
 error();
