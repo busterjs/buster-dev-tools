@@ -19,7 +19,7 @@ if (arg == "-h" || args == "--help") {
     console.log("     pull    Clone and/or pull all the repos.");
     console.log("     deps    Reinstalls all non-buster deps (assuming you have done 'pull' already.");
     console.log("     clear   Removes node_modules folder of all projects (except for project buster-dev-tools).");
-    console.log("     test    Calls 'npm install && npm test' for all projects."); 
+    console.log("     test    Calls 'npm test' for all projects."); 
     console.log("     changed Checks for not released changes for all projects.");
     console.log("     pr      Determines the number of open pull requests for all projects.");
     return;
