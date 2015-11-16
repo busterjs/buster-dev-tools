@@ -19,10 +19,10 @@ var projects = [
     //     name: "buster-jstestdriver",
 
     //     // 'skip: no' means 'do NOT skip this' (default).
-    //     // 'skip: yes' would skip the entire project, 
+    //     // 'skip: yes' would skip the entire project,
     //     // just as 'skip: when(onWindows)' would but only on Windows
     //     skip: no
-    // },        
+    // },
     {
         name: "buster-html-doc"//,
         // Here's a more complex workaround: on Windows, jsdom fails because npm
@@ -37,6 +37,7 @@ var projects = [
     "buster",
     "buster-dev-tools",
     "ansi-colorizer",
+    "ansi-grid",
     "bane",
     "buster-analyzer",
     "buster-autotest",
@@ -52,7 +53,6 @@ var projects = [
     "buster-test-cli",
     "evented-logger",
     "formatio",
-    "fs-watch-tree",
     "multi-glob",
     "posix-argv-parser",
     "prefsink",
